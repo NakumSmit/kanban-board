@@ -1,5 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators, } from '@angular/forms';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -11,7 +12,9 @@ import { FormBuilder, ReactiveFormsModule, Validators, } from '@angular/forms';
 export class LoginComponent {
 
   private fb = inject(FormBuilder);
+  private router = inject(Router);
 
+  user: any;
   loginForm = this.fb.nonNullable.group({
     username: ['', [Validators.required, Validators.minLength(4)]],
     email: ['', [Validators.required, Validators.email]],
@@ -42,6 +45,9 @@ export class LoginComponent {
       console.log(this.loginForm.value);
 
       this.loginForm.reset();
+      this.router.navigate(['/dashboard']);
+    } else {
+      this.loginForm.markAllAsTouched();
     }
   }
 }
