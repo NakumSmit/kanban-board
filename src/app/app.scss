@@ -1,0 +1,14 @@
+.background-image {
+  min-height: 100dvh;
+  padding: 20px;
+  overflow: hidden;
+  box-sizing: border-box;
+  /* Background image with overlay */
+  background: linear-gradient(rgba(23, 26, 41, 0.7), rgba(24, 30, 42, 0.7)), 
+              url('/assets/images/bg_blured.jpg') center/cover no-repeat;
+}
+
+
+* {
+    box-sizing: border-box;
+}

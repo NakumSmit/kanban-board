@@ -7,7 +7,7 @@ import { Router } from '@angular/router';
   standalone: true,
   imports: [ReactiveFormsModule],
   templateUrl: './login.html',
-  styleUrl: './login.scss',
+  styleUrls: ['./login.scss', '../../app.scss'],
 })
 export class LoginComponent {
 

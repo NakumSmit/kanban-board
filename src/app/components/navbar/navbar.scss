@@ -1,0 +1,27 @@
+.navbar-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+}
+
+.info>img {
+    width: 30px;
+    height: 30px;
+    object-fit: contain;
+    margin-right: 10px;
+    filter: invert(1);
+}
+
+.info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 10px 40px;
+}
+
+.logo-name {
+    font-size: 18px;
+    color: #fff;
+    margin: 0;
+}

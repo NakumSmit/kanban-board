@@ -1,14 +1,10 @@
-.login-page {
+.login-page{
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
   width: 100%;
   font-family: 'Inter', sans-serif;
   
-  /* Background image with overlay */
-  background: linear-gradient(rgba(23, 26, 41, 0.7), rgba(24, 30, 42, 0.7)), 
-              url('/assets/images/bg_blured.jpg') center/cover no-repeat;
 }
 
 .glass-card {
