@@ -1,48 +1,54 @@
-<div class="login-container">
-  <div class="login-card">
-    <h2>Login</h2>
-    <div class="form-container">
-      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-
-      <label for="username">Username:</label>
-      <input type="text" id="username" formControlName="username">
-      <div class="error">
+<div class="login-page">
+  <div class="glass-card">
+    <div class="user-avatar">
+      <img src="assets/icons/user.svg" alt="" width="75px" height="75px">
+    </div>
+    
+    <h2>Welcome</h2>
+    <p class="subtitle">Sign in to continue to KANBAN BOARD</p>
+    
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      
+      <div class="input-group">
+        <span class="icon"><img src="assets/icons/user.svg" alt="" width="18px" height="18px"></span>
+        <input type="text" id="username" formControlName="username" placeholder="Name">
+      </div>
+      <div class="error-container">
         @if(username?.touched && username?.hasError('required')){
-          <p>Username is required.</p>
+          <p class="error-text">Username is required.</p>
         }
         @if(username?.touched && username?.hasError('minlength')){
-          <p>Username must be at least 4 characters long.</p>
+          <p class="error-text">Username must be at least 4 characters long.</p>
         }
-        
       </div>
 
-      <label for="email">Email:</label>
-      <input type="email" id="email" formControlName="email">
-      <div class="error">
+      <div class="input-group">
+        <span class="icon"><img src="assets/icons/email.svg" alt="" width="18px" height="18px"></span>
+        <input type="email" id="email" formControlName="email" placeholder="Email ID">
+      </div>
+       <div class="error-container">
         @if(email?.touched && email?.hasError('required')){
-          <p>Email is required.</p>
+          <p class="error-text">Email is required.</p>
         }
         @if(email?.touched && email?.hasError('email')){
-          <p>Email is invalid.</p>
+          <p class="error-text">Email is invalid.</p>
         }
-        
       </div>
 
-      <label for="password">Password:</label>
-      <input type="password" id="password" formControlName="password">
-      <div class="error">
+      <div class="input-group">
+        <span class="icon"><img src="assets/icons/lock.svg" alt="" width="18px" height="18px"></span>
+        <input type="password" id="password" formControlName="password" placeholder="Password">
+        <span class="icon-right"><img src="assets/icons/visibility.svg" alt="" width="18px" height="18px"></span>
+      </div>
+      <div class="error-container">
         @if(password?.touched && password?.hasError('required')){
-          <p>Password is required.</p>
+          <p class="error-text">Password is required.</p>
         }
         @if(password?.touched && password?.hasError('minlength')){
-          <p>Password must be at least 6 characters long.</p>
+          <p class="error-text">Password must be at least 6 characters long.</p>
         }
-        
       </div>
-
-      <button type="submit">Login</button>
-
+      <button type="submit" class="login-btn">LOGIN</button>
     </form>
-    </div>
   </div>
 </div>
