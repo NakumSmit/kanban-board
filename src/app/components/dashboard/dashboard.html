@@ -1,0 +1,4 @@
+<header class="dashboard-header">
+    <h2>Welcome, {{user.username || 'User' | uppercase }} </h2>
+    <button (click)="logout()">Logout</button>
+</header>
