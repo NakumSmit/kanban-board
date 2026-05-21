@@ -1,0 +1,9 @@
+@for(user of users(); track user.id){
+    <p>{{user.todo}}</p>
+} @empty {
+    <p style="color: #ccc; font-style: italic; padding: 10px;">Loading tasks or no tasks found...</p>
+}
+
+<div class="task-card ">
+
+</div>
