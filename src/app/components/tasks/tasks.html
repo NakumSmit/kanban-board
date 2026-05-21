@@ -1,9 +1,44 @@
-@for(user of users(); track user.id){
-    <p>{{user.todo}}</p>
+<!-- @for(user of users(); track user.id){
+<p>{{user.todo}}</p>
 } @empty {
-    <p style="color: #ccc; font-style: italic; padding: 10px;">Loading tasks or no tasks found...</p>
-}
+<p style="color: #ccc; font-style: italic; padding: 10px;">Loading tasks or no tasks found...</p>
+} -->
 
-<div class="task-card ">
+<div class="main-task-container">
+    <div class="task-card ">
+        <div class="top-content">
+            <span class="top-content-title todo-title">Todo</span>
+        </div>
+        @for(user of users(); track user.id){
+            @if(!user.completed){
+                <div class="task-item">
+                    <div class="task-card-content">
+                        <span class="task-title">Title:- {{user?.title || "fetched task"}}</span>
+                        <p>Tasks:- {{user.todo}}</p>                                  
+                    </div>
+                    <hr style="border-color: rgba(255, 255, 255, 0.3); width: 100%;">
+                    <div class="task-card-footer">
+                        <span>Priority:- {{user.priority}}</span>
+                        <span>Assigned to:- {{user.userId}}</span>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+    <div class="task-card">
+        <div class="top-content">
+            <span class="top-content-title in-progress-title">In Progress</span>
+        </div>
 
+    </div>
+    <div class="task-card">
+        <div class="top-content">
+            <span class="top-content-title testing-title">Testing</span>
+        </div>
+    </div>
+    <div class="task-card">
+        <div class="top-content">
+            <span class="top-content-title done-title">Done</span>
+        </div>
+    </div>
 </div>

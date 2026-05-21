@@ -11,7 +11,7 @@ export class Userdata {
   ) { }
 
   getUserData(){
-    return this.http.get('https://dummyjson.com/todos/random/10')
+    return this.http.get('https://dummyjson.com/todos/random/5')
     // return this.http.get('https://fakerestapi.azurewebsites.net/api/v1/Activities')
   }
 }
