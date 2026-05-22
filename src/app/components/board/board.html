@@ -14,9 +14,12 @@
                 </button>
             </div>
             <div class="top-right">
-                <button class="add-task-button"> 
+                <button class="add-task-button" (click)="openAddTaskModal()">
                     + Add Task
                 </button>
+                @if(isAddTaskModalOpen){
+                    <app-add-task-modal (closeModal)="closeAddTaskModal()"></app-add-task-modal>
+                }
             </div>
         </div>
         <div class="board">

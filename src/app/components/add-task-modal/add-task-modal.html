@@ -1,0 +1,85 @@
+<div class="modal-overlay" (click)="close()">
+    <div class="modal-container" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+            <h2>Create Task</h2>
+            <button class="close-btn" (click)="close()">
+                ✕
+            </button>
+        </div>
+        <div class="modal-body">
+
+            <form [formGroup]="taskForm" (ngsubmit)="addTask()">
+
+                <input type="text" placeholder="Task title" formControlName="title">
+                <div class="error-container">
+                    @if(title?.touched && title?.hasError('required')){
+                    <p class="error-text">Task title is required</p>
+                    }
+                </div>
+
+                <input type="text" placeholder="Task Description" formControlName="description">
+                <div class="error-container">
+                    @if(description?.touched && description?.hasError('required')){
+                    <p class="error-text">Task description is required</p>
+                    }
+                </div>
+
+                <div class="col_2">
+                    <div class="priority-container">
+                        <select formControlName="priority">
+                            <option value="" disabled selected>Select Priority</option>
+                            <option value="low">Low</option>
+                            <option value="medium">Medium</option>
+                            <option value="high">High</option>
+                        </select>
+                        <div class="error-container">
+                            @if(priority?.touched && priority?.hasError('required')){
+                            <p class="error-text">Task priority is required</p>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="duedate-container">
+                        <input type="date" placeholder="Due Date" formControlName="dueDate">
+                        <div class="error-container">
+                            @if(dueDate?.touched && dueDate?.hasError('required')){
+                            <p class="error-text">Due date is required</p>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <input type="text" placeholder="Assigned User" formControlName="assignedUser">
+                <div class="error-container">
+                    @if(assignedUser?.touched && assignedUser?.hasError('required')){
+                    <p class="error-text">Assigned user is required</p>
+                    }
+                </div>
+
+                <select formControlName="status">
+                    <option value="" disabled selected>Select Status</option>
+                    <option value="todo" type="Todo">Todo</option>
+                    <option value="in-progress">In Progress</option>
+                    <option value="testing">Testing</option>
+                    <option value="done">Done</option>
+                </select>
+                <div class="error-container">
+                    @if(status?.touched && status?.hasError('required')){
+                    <p class="error-text">Status is required</p>
+                    }
+                </div>
+
+
+            </form>
+
+            <div class="modal-footer">
+                <button class="cancel-btn" (click)="close()">
+                    Cancel
+                </button>
+                <button class="create-btn" (click)="addTask()" >
+                    Create Task
+                </button>
+            </div>
+
+        </div>
+    </div>

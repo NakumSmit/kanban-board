@@ -1,9 +1,12 @@
 export interface Tasks {
-    taskId: number,
+    taskId: any,
     title: string,
     description: string,
-    priority: "high" | "medium" | "low",
-    dueDate: Date,
+    // priority: "high" | "medium" | "low",
+    priority: string,
+    // dueDate: Date,
+    dueDate: string,
     assignedUser: string,
-    status: "todo" | "in-progress" | "testing" | "done",
+    // status: "todo" | "in-progress" | "testing" | "done",
+    status: string,
 }
