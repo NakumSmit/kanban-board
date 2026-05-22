@@ -8,12 +8,18 @@
         </div>
         <div class="modal-body">
 
-            <form [formGroup]="taskForm" (ngsubmit)="addTask()">
+            <form [formGroup]="taskForm" (ngSubmit)="addTask()">
 
                 <input type="text" placeholder="Task title" formControlName="title">
                 <div class="error-container">
                     @if(title?.touched && title?.hasError('required')){
                     <p class="error-text">Task title is required</p>
+                    }
+                    @if(title?.touched && title?.hasError('minlength')){
+                    <p class="error-text">Task title must be at least 3 characters long</p>
+                    }
+                    @if(title?.touched && title?.hasError('pattern')){
+                    <p class="error-text">Task title must contain only alphabets</p>
                     }
                 </div>
 
@@ -21,6 +27,12 @@
                 <div class="error-container">
                     @if(description?.touched && description?.hasError('required')){
                     <p class="error-text">Task description is required</p>
+                    }
+                    @if(description?.touched && description?.hasError('minlength')){
+                    <p class="error-text">Task description must be at least 10 characters long</p>
+                    }
+                    @if(description?.touched && description?.hasError('pattern')){
+                    <p class="error-text">Task description must contain only alphabets</p>
                     }
                 </div>
 
@@ -54,6 +66,9 @@
                     @if(assignedUser?.touched && assignedUser?.hasError('required')){
                     <p class="error-text">Assigned user is required</p>
                     }
+                    @if(assignedUser?.touched && assignedUser?.hasError('pattern')){
+                    <p class="error-text">Please enter a valid user name.</p>
+                    }
                 </div>
 
                 <select formControlName="status">
@@ -70,16 +85,14 @@
                 </div>
 
 
+                <div class="modal-footer">
+                    <button type="button" class="cancel-btn" (click)="close()">
+                        Cancel
+                    </button>
+                    <button type="submit" class="create-btn">
+                        Create Task
+                    </button>
+                </div>
             </form>
-
-            <div class="modal-footer">
-                <button class="cancel-btn" (click)="close()">
-                    Cancel
-                </button>
-                <button class="create-btn" (click)="addTask()" >
-                    Create Task
-                </button>
-            </div>
-
         </div>
     </div>

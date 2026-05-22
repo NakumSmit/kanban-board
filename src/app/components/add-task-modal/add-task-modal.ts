@@ -13,11 +13,22 @@ export class AddTaskModalComponent {
 
 
   taskForm = new FormGroup({
-      title: new FormControl("",Validators.required),
-      description: new FormControl("",Validators.required),
+      title: new FormControl("",[
+        Validators.required,
+        Validators.minLength(3),
+        Validators.pattern("[a-zA-Z].*")
+      ]),
+      description: new FormControl("",[
+        Validators.required,
+        Validators.minLength(10),
+        Validators.pattern("[a-zA-Z].*")
+      ]),
       priority: new FormControl("",Validators.required),
       dueDate: new FormControl("",Validators.required),
-      assignedUser: new FormControl("",Validators.required),
+      assignedUser: new FormControl("",[
+        Validators.required,
+        Validators.pattern("[a-zA-Z].*")
+      ]),
       status: new FormControl("",Validators.required)
     })
 
@@ -25,6 +36,7 @@ export class AddTaskModalComponent {
 
 
   @Output() closeModal = new EventEmitter<void>();
+  @Output() taskCreated = new EventEmitter<Tasks>();
 
     close(): void {
       this.closeModal.emit();
@@ -70,8 +82,9 @@ export class AddTaskModalComponent {
       status: this.taskForm.value.status!
     }    
     
-    console.log('Form is valid, submitting task...');
-    console.log('Task data:', newTask);
+    this.taskCreated.emit(newTask);
+    this.taskForm.reset();
+    this.close();
    }else{
     this.taskForm.markAllAsTouched();
    }

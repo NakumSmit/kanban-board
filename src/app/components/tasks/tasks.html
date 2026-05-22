@@ -10,19 +10,51 @@
             <span class="top-content-title todo-title">Todo</span>
         </div>
         @for(user of users(); track user.id){
-            @if(!user.completed){
-                <div class="task-item">
-                    <div class="task-card-content">
-                        <span class="task-title">Title:- {{user?.title || "fetched task"}}</span>
-                        <p>Tasks:- {{user.todo}}</p>                                  
-                    </div>
-                    <hr style="border-color: rgba(255, 255, 255, 0.3); width: 100%;">
-                    <div class="task-card-footer">
-                        <span>Priority:- {{user.priority}}</span>
-                        <span>Assigned to:- {{user.userId}}</span>
-                    </div>
-                </div>
-            }
+        @if(!user.completed){
+        <div class="task-item">
+            <div class="task-card-content">
+                <span class="task-title">Title:- {{user?.title || "fetched task"}}</span>
+                <p>Tasks:- {{user.todo}}</p>
+            </div>
+            <hr style="border-color: rgba(255, 255, 255, 0.3); width: 100%;">
+            <div class="task-card-footer">
+                <span>Priority:- {{user.priority}}</span>
+                <span>Assigned to:- {{user.userId}}</span>
+            </div>
+        </div>
+        }
+        }
+
+        @for(task of tasks; track task.taskId){
+
+        <div class="task-item">
+
+            <div class="task-card-content">
+
+                <span class="task-title">
+                    {{task.title}}
+                </span>
+
+                <p>{{task.description}}</p>
+
+            </div>
+
+            <hr>
+
+            <div class="task-card-footer">
+
+                <span>
+                    Priority: {{task.priority}}
+                </span>
+
+                <span>
+                    Assigned: {{task.assignedUser}}
+                </span>
+
+            </div>
+
+        </div>
+
         }
     </div>
     <div class="task-card">

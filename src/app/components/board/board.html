@@ -18,12 +18,15 @@
                     + Add Task
                 </button>
                 @if(isAddTaskModalOpen){
-                    <app-add-task-modal (closeModal)="closeAddTaskModal()"></app-add-task-modal>
+                    <app-add-task-modal 
+                    (closeModal)="closeAddTaskModal()"
+                    (taskCreated)="addNewTask($event)">
+                </app-add-task-modal>
                 }
             </div>
         </div>
         <div class="board">
-            <app-tasks></app-tasks>
+            <app-tasks [tasks]="tasks"></app-tasks>
         </div>
     </div>
 </div>
