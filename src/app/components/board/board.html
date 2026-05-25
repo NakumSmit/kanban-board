@@ -6,10 +6,11 @@
         <div class="top-content">
             <div class="search-box">
                 <img src="assets/icons/search.svg" alt="Search" class="search-icon" />
-                <input type="text" placeholder="Search" class="search-input" />
+                <input type="text" placeholder="Search" class="search-input" (input)="searchTasks($event)"/>
             </div>
             <div class="filter-box">
                 <button class="filter-button">
+                    <img src="assets/icons/filter.svg" alt="Filter" class="filter-icon" />
                     Filter
                 </button>
             </div>

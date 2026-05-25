@@ -68,6 +68,12 @@
     outline: none;
 }
 
+/* Dropdown options */
+select option {
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+}
+
 .modal-body textarea{
     resize: none;
     height: 120px;

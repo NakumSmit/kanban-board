@@ -48,6 +48,17 @@
     padding: 10px 20px;
     height: 38px;
     width: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+
+    .filter-icon {
+        object-fit: contain;
+        height: 20px;
+        width: 20px;
+        filter: brightness(0) invert(1);
+    }  
 }
 
 .top-content {

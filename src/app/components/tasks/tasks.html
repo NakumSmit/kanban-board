@@ -1,76 +1,65 @@
-<!-- @for(user of users(); track user.id){
-<p>{{user.todo}}</p>
-} @empty {
-<p style="color: #ccc; font-style: italic; padding: 10px;">Loading tasks or no tasks found...</p>
-} -->
-
 <div class="main-task-container">
-    <div class="task-card ">
+
+    @for(column of columns; track column.status){
+
+    <div class="task-card">
         <div class="top-content">
-            <span class="top-content-title todo-title">Todo</span>
+            <span class="top-content-title"
+                  [ngClass]="column.class">
+                {{column.title}}
+            </span>
         </div>
-        @for(user of users(); track user.id){
-        @if(!user.completed){
-        <div class="task-item">
+
+        @for(task of column.tasks; track task.taskId){
+
+        <div class="task-item" (click)="editViewTask(task)">
             <div class="task-card-content">
-                <span class="task-title">Title:- {{user?.title || "fetched task"}}</span>
-                <p>Tasks:- {{user.todo}}</p>
-            </div>
-            <hr style="border-color: rgba(255, 255, 255, 0.3); width: 100%;">
-            <div class="task-card-footer">
-                <span>Priority:- {{user.priority}}</span>
-                <span>Assigned to:- {{user.userId}}</span>
-            </div>
-        </div>
-        }
-        }
-
-        @for(task of tasks; track task.taskId){
-
-        <div class="task-item">
-
-            <div class="task-card-content">
-
                 <span class="task-title">
-                    {{task.title}}
+                    {{task.title | titlecase}}
                 </span>
 
-                <p>{{task.description}}</p>
+                <br>
+                <span class="task-date">
+                    <img src="assets/icons/calendar.svg" alt="calendar" class="calendar-icon" />
+                    {{task.dueDate | date:'dd/MM/yyyy'}}
+                </span>
 
+                <p>
+                    {{task.description}}
+                </p>
             </div>
 
-            <hr>
-
+            <hr class="task-card-footer-border">
+            
             <div class="task-card-footer">
+                <div class="priority">
+                    Priority :
+                    @switch(task.priority){
+                        @case("low"){
+                        <span class="priority low">
+                            Low
+                        </span>
+                        }
+                        @case("medium"){
+                        <span class="priority medium">
+                            Medium
+                        </span>
+                        }
+                        @default{
+                        <span class="priority high">
+                            High
+                        </span>
+                        }
+                    }
+                </div>
 
-                <span>
-                    Priority: {{task.priority}}
+                <span class="priority">
+                    Assigned to:
+                    {{task.assignedUser | titlecase}}
                 </span>
-
-                <span>
-                    Assigned: {{task.assignedUser}}
-                </span>
-
             </div>
-
         </div>
-
         }
     </div>
-    <div class="task-card">
-        <div class="top-content">
-            <span class="top-content-title in-progress-title">In Progress</span>
-        </div>
-
-    </div>
-    <div class="task-card">
-        <div class="top-content">
-            <span class="top-content-title testing-title">Testing</span>
-        </div>
-    </div>
-    <div class="task-card">
-        <div class="top-content">
-            <span class="top-content-title done-title">Done</span>
-        </div>
-    </div>
+    }
 </div>

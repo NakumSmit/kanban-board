@@ -64,12 +64,50 @@
     flex-direction: column;
     background-color: rgb(105, 105, 105, 0.5);    
     border-radius: 15px;
+    cursor: pointer;
     color: #fff;
-
 
     .task-card-footer{
         display: flex;
         justify-content: space-between;
         align-items: center;
     }
+}
+
+.task-date{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.calendar-icon {
+    position: relative;
+    object-fit: contain;
+    height: 20px;
+    width: 20px;
+    filter: brightness(0) invert(1);
+    pointer-events: none;
+    z-index: 999;
+} 
+
+.task-card-footer-border{
+    border: 1px solid rgb(105, 105, 105, 0.5);
+    width: 100%;
+    margin: 10px 0;
+}
+
+.priority{
+    font-weight:300;
+}
+
+.low{
+    color:#4ade80;
+}
+
+.medium{
+    color:#facc15;
+}
+
+.high{
+  color:#f87171;
 }

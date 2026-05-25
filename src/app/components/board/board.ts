@@ -21,13 +21,15 @@ export class BoardComponent {
     if(tasks){
       this.tasks = JSON.parse(tasks);
     }
+    this.filteredTasks = [...this.tasks];
   }
   
   tasks: Tasks[] = [];
+  filteredTasks: Tasks[] = [];
   isAddTaskModalOpen:boolean = false;
 
   addNewTask(task: Tasks){
-    this.tasks.push(task);
+    this.tasks = [...this.tasks, task];
 
     localStorage.setItem('tasks',JSON.stringify(this.tasks));
   }
@@ -38,5 +40,14 @@ export class BoardComponent {
 
   closeAddTaskModal(){
     this.isAddTaskModalOpen = false;
+  }
+
+  searchTasks(event:Event){
+    const searchTerm = (event.target as HTMLInputElement).value;
+    if(searchTerm.trim() === ""){
+      this.fetchTasks();
+    }else{
+      this.tasks = this.filteredTasks.filter(task => task.title.toLowerCase().includes(searchTerm.toLowerCase()));
+    }
   }
 }

@@ -76,10 +76,10 @@ export class AddTaskModalComponent {
       taskId: this.generateTaskId(),
       title: this.taskForm.value.title!,
       description: this.taskForm.value.description!,
-      priority: this.taskForm.value.priority!,
-      dueDate: this.taskForm.value.dueDate!,
+      priority: this.taskForm.value.priority! as "high" | "medium" | "low",
+      dueDate: new Date(this.taskForm.value.dueDate!),
       assignedUser: this.taskForm.value.assignedUser!,
-      status: this.taskForm.value.status!
+      status: this.taskForm.value.status! as "todo" | "in-progress" | "testing" | "done"
     }    
     
     this.taskCreated.emit(newTask);
