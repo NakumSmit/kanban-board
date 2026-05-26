@@ -1,14 +1,10 @@
-.login-page {
+.login-page{
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
   width: 100%;
   font-family: 'Inter', sans-serif;
   
-  /* Background image with overlay */
-  background: linear-gradient(rgba(23, 26, 41, 0.7), rgba(24, 30, 42, 0.7)), 
-              url('/assets/images/bg_blured.jpg') center/cover no-repeat;
 }
 
 .glass-card {
@@ -39,7 +35,7 @@
 }
 
 h2 {
-  margin: 0 0 8px 0;
+  margin: 10px;
   font-size: 26px;
   font-weight: 600;
   color: #fff;
@@ -48,6 +44,7 @@ h2 {
 
 .subtitle { 
   color: #a0aab2;
+  margin-bottom: 10px; 
 }
 
 form {
@@ -118,19 +115,6 @@ form {
       font-family: 'Inter', sans-serif !important;
     }
   }
-}
-
-.error-container {
-  min-height: 20px;
-  margin-bottom: 8px;
-  text-align: left;
-  padding-left: 12px;
-}
-
-.error-text {
-  color: #e75c5c;
-  font-size: 13px;
-  margin: 0;
 }
 
 .login-btn {

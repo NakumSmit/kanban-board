@@ -1,0 +1,33 @@
+<div class="board-container">
+    <div class="board-header">
+        <p class="title">Tasks</p>
+    </div>
+    <div class="board-content">
+        <div class="top-content">
+            <div class="search-box">
+                <img src="assets/icons/search.svg" alt="Search" class="search-icon" />
+                <input type="text" placeholder="Search" class="search-input" (input)="searchTasks($event)"/>
+            </div>
+            <div class="filter-box">
+                <button class="filter-button">
+                    <img src="assets/icons/filter.svg" alt="Filter" class="filter-icon" />
+                    Filter
+                </button>
+            </div>
+            <div class="top-right">
+                <button class="add-task-button" (click)="openAddTaskModal()">
+                    + Add Task
+                </button>
+                @if(isAddTaskModalOpen){
+                    <app-add-task-modal 
+                    (closeModal)="closeAddTaskModal()"
+                    (taskCreated)="addNewTask($event)">
+                </app-add-task-modal>
+                }
+            </div>
+        </div>
+        <div class="board">
+            <app-tasks [tasks]="tasks"></app-tasks>
+        </div>
+    </div>
+</div>

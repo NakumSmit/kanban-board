@@ -1,0 +1,65 @@
+<div class="main-task-container">
+
+    @for(column of columns; track column.status){
+
+    <div class="task-card">
+        <div class="top-content">
+            <span class="top-content-title"
+                  [ngClass]="column.class">
+                {{column.title}}
+            </span>
+        </div>
+
+        @for(task of column.tasks; track task.taskId){
+
+        <div class="task-item" (click)="editViewTask(task)">
+            <div class="task-card-content">
+                <span class="task-title">
+                    {{task.title | titlecase}}
+                </span>
+
+                <br>
+                <span class="task-date">
+                    <img src="assets/icons/calendar.svg" alt="calendar" class="calendar-icon" />
+                    {{task.dueDate | date:'dd/MM/yyyy'}}
+                </span>
+
+                <p>
+                    {{task.description}}
+                </p>
+            </div>
+
+            <hr class="task-card-footer-border">
+            
+            <div class="task-card-footer">
+                <div class="priority">
+                    Priority :
+                    @switch(task.priority){
+                        @case("low"){
+                        <span class="priority low">
+                            Low
+                        </span>
+                        }
+                        @case("medium"){
+                        <span class="priority medium">
+                            Medium
+                        </span>
+                        }
+                        @default{
+                        <span class="priority high">
+                            High
+                        </span>
+                        }
+                    }
+                </div>
+
+                <span class="priority">
+                    Assigned to:
+                    {{task.assignedUser | titlecase}}
+                </span>
+            </div>
+        </div>
+        }
+    </div>
+    }
+</div>

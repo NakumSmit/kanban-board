@@ -1,25 +1,13 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { UpperCasePipe } from '@angular/common';
+import { Component } from '@angular/core';
+import { NavbarComponent } from '../navbar/navbar';
+import { BoardComponent } from '../board/board';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [UpperCasePipe],
+  standalone:true,
+  imports: [NavbarComponent, BoardComponent],
   templateUrl: './dashboard.html',
-  styleUrl: './dashboard.scss',
+  styleUrls: ['./dashboard.scss', '../../app.scss'],
 })
-export class DashboardComponent implements OnInit {
 
-  user: any;
-
-  constructor(private router: Router) { }
-
-  ngOnInit() {
-    this.user = JSON.parse(localStorage.getItem('user') || '{}');
-  }
-
-  logout() {
-    localStorage.removeItem('user');
-    this.router.navigate(['/login']);
-  }
-}
+export class DashboardComponent { }

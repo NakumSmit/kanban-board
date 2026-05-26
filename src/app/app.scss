@@ -1,0 +1,30 @@
+.background-image {
+  min-height: 100dvh;
+  padding: 20px;
+  overflow: hidden;
+  box-sizing: border-box;
+  /* Background image with overlay */
+  background: linear-gradient(rgba(23, 26, 41, 0.7), rgba(24, 30, 42, 0.7)), 
+              url('/assets/images/bg_blured.jpg') center/cover no-repeat;
+}
+
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+
+.error-container {
+  min-height: 20px;
+  margin-bottom: 8px;
+  text-align: left;
+  padding-left: 12px;
+}
+
+.error-text {
+  color: #e75c5c;
+  font-size: 13px;
+  margin: 0;
+}
