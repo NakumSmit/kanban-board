@@ -4,11 +4,14 @@ import {
   signal,
   OnInit,
   OnChanges,
-  SimpleChanges
+  SimpleChanges,
+  Output,
+  EventEmitter
 } from '@angular/core';
 import { DatePipe, TitleCasePipe, NgClass } from '@angular/common';
 import { Userdata } from '../../services/userdata';
 import { Tasks } from '../../models/tasks';
+import { ViewTaskModal } from '../view-task-modal/view-task-modal';
 
 interface KanbanColumn {
   title: string;
@@ -20,9 +23,9 @@ interface KanbanColumn {
 @Component({
   selector: 'app-tasks',
   standalone: true,
-  imports: [DatePipe, TitleCasePipe, NgClass],
+  imports: [DatePipe, TitleCasePipe, NgClass, ViewTaskModal],
   templateUrl: './tasks.html',
-  styleUrls: ['./tasks.scss'],
+  styleUrls: ['./tasks.scss', '../../app.scss'],
 })
 
 export class TasksComponent implements OnInit, OnChanges {
@@ -60,6 +63,10 @@ export class TasksComponent implements OnInit, OnChanges {
 
   constructor(private userdata: Userdata) { }
 
+  isViewTaskModalOpen:boolean = false;
+  selectedTask?:Tasks;
+  @Output() taskView = new EventEmitter<Tasks>();
+
   ngOnInit() {
     this.userdata.getUserData().subscribe((res: any) => {
       this.users.set(res);
@@ -82,6 +89,15 @@ export class TasksComponent implements OnInit, OnChanges {
 
   editViewTask(task: Tasks) {
     console.log(task);
+    this.selectedTask = task;
+    this.isViewTaskModalOpen = true;
+    // console.log(this.selectedTask);
+    this.taskView.emit(task);
+  }
+  
+  closeViewTaskModal(){
+    this.isViewTaskModalOpen = false;
+    this.selectedTask = undefined;
   }
 
 }

@@ -1,9 +1,49 @@
+:host {
+    display: block;
+    height: 100%;
+    min-height: 0;
+
+    @media screen and (max-width: 768px) {
+        height: auto;
+    }
+}
+
 .main-task-container {
     padding-top: 20px;
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 10px;
     justify-content: space-around;
+    height: 100%;
+    min-height: 0;
+
+    .task-column {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        min-height: 0;
+        overflow: hidden;
+    }
+
+    .task-column-content {
+        flex: 1;
+        min-height: 0;
+        padding-right: 4px;
+        margin-bottom: 5px;
+    }
+
+    .task-title{
+        @media screen and (max-width: 768px) {
+            font-size: 15px;
+        }
+        @media screen and (min-width: 769px) {
+            font-size: 18px;
+        }
+    }
+
+    .task-date{
+        padding-bottom: 15px;
+    }
 
     .top-content {
         display: flex;
@@ -48,12 +88,40 @@
         grid-template-columns: repeat(2, 1fr);
         gap: 10px;
         justify-content: space-around;
+        height: auto;
+        overflow: visible;
+
+        .task-column {
+            display: block;
+            height: auto;
+            overflow: visible;
+        }
+
+        .task-column-content {
+            display: block;
+            max-height: 420px;
+            padding-right: 4px;
+        }
     }
 
     @media screen and (max-width: 480px) {
         grid-template-columns: repeat(1, 1fr);
         gap: 10px;
         justify-content: space-around;
+        height: auto;
+        overflow: visible;
+
+        .task-column {
+            display: block;
+            height: auto;
+            overflow: visible;
+        }
+
+        .task-column-content {
+            display: block;
+            max-height: 420px;
+            padding-right: 4px;
+        }
     }
 }
 

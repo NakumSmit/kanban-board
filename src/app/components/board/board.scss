@@ -1,3 +1,9 @@
+:host {
+    display: block;
+    flex: 1;
+    min-height: 0;
+}
+
 .title {
     font-size: 30px;
     margin-bottom: 15px;
@@ -29,6 +35,14 @@
     &::placeholder {
         color: #fff !important;
     }
+}
+
+.search-input:focus,
+.search-input:active,
+.search-input:focus-visible {
+    outline: none;
+    border: none;
+    box-shadow: none;
 }
 
 .search-icon {
@@ -124,4 +138,32 @@
     min-height: 0;
     overflow: hidden;
     padding-bottom: 20px;
+}
+
+@media screen and (max-width: 768px) {
+    :host {
+        height: auto;
+        display: block;
+        flex: none;
+    }
+
+    .board-container {
+        transform: none;
+        width: 100%;
+        height: auto;
+        overflow: visible;
+    }
+
+    .board-content {
+        display: block;
+        height: auto;
+        overflow: visible;
+    }
+
+    .board {
+        display: block;
+        height: auto;
+        overflow: visible;
+        padding-bottom: 20px;
+    }
 }

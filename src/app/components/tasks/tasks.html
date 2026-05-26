@@ -9,7 +9,7 @@
             </span>
         </div>
 
-        <div class="task-column-content">
+        <div class="task-column-content custom-scrollbar">
             @for(task of column.tasks; track task.taskId){
 
             <div class="task-item" (click)="editViewTask(task)" [ngClass]="column.class">
@@ -64,3 +64,9 @@
     </div>
     }
 </div>
+@if(isViewTaskModalOpen && selectedTask){
+    <app-view-task-modal 
+        [task]="selectedTask" 
+        (closeModal)="closeViewTaskModal()">
+    </app-view-task-modal>
+}
