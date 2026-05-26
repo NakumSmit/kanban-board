@@ -1,5 +1,7 @@
 .title {
     font-size: 30px;
+    margin-bottom: 15px;
+    margin-top: 3px;
 }
 
 .search-box{
@@ -58,7 +60,7 @@
         height: 20px;
         width: 20px;
         filter: brightness(0) invert(1);
-    }  
+    }
 }
 
 .top-content {
@@ -73,7 +75,7 @@
 
     @media screen and (max-width: 550px) {
         flex-direction: column;
-        align-items: start;    
+        align-items: start;
         justify-content: flex-start;
     }
 }
@@ -95,4 +97,31 @@
     width: 120px;
     background-color: #F0E36B;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+.board-container {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+
+    transform: scale(0.8);
+    transform-origin: top left;
+
+    width: 125%;
+    height: 125%;
+}
+
+.board-content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.board {
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+    padding-bottom: 20px;
 }

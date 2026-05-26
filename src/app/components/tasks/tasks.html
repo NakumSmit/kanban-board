@@ -2,17 +2,17 @@
 
     @for(column of columns; track column.status){
 
-    <div class="task-card">
+    <div class="task-column">
         <div class="top-content">
-            <span class="top-content-title"
-                  [ngClass]="column.class">
+            <span class="top-content-title" [ngClass]="column.class">
                 {{column.title}}
             </span>
         </div>
 
-        @for(task of column.tasks; track task.taskId){
+        <div class="task-column-content">
+            @for(task of column.tasks; track task.taskId){
 
-        <div class="task-item" (click)="editViewTask(task)">
+            <div class="task-item" (click)="editViewTask(task)" [ngClass]="column.class">
             <div class="task-card-content">
                 <span class="task-title">
                     {{task.title | titlecase}}
@@ -60,6 +60,7 @@
             </div>
         </div>
         }
+        </div>
     </div>
     }
 </div>
