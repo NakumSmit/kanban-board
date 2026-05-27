@@ -1,39 +1,104 @@
 <div class="modal-overlay" (click)="close()">
     <div class="modal-container" (click)="$event.stopPropagation()">
         <div class="modal-header">
-            <h2>Task Details</h2>
+            <h2>Create Task</h2>
             <button class="close-btn" (click)="close()">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                ✕
             </button>
         </div>
         <div class="modal-body">
-            <div class="field">
-                <span class="label">Task Name</span>
-                <span class="input">{{ task.title }}</span>
-            </div>
-            <div class="field">
-                <span class="label">Description</span>
-                <span class="value">{{ task.description }}</span>
-            </div>
-            <div class="field-row">
-                <div class="field">
-                    <span class="label">Status</span>
-                    <span class="value">{{ task.status }}</span>
+
+            <!-- <form [formGroup]="editTaskForm"> -->
+
+                <label for="title">Title:</label>
+                <input type="text" placeholder="{{ task.title }}" formControlName="title">
+                <!-- <div class="error-container">
+                    @if(title?.touched && title?.hasError('required')){
+                    <p class="error-text">Task title is required</p>
+                    }
+                    @else if(title?.touched && title?.hasError('minlength')){
+                    <p class="error-text">Task title must be at least 3 characters long</p>
+                    }
+                    @else if(title?.touched && title?.hasError('pattern')){
+                    <p class="error-text">Task title must contain only alphabets</p>
+                    }
+                </div> -->
+
+                <label for="description">Description:</label>
+                <input type="text" placeholder="{{ task.description }}" formControlName="description">
+                <!-- <div class="error-container">
+                    @if(description?.touched && description?.hasError('required')){
+                    <p class="error-text">Task description is required</p>
+                    }
+                    @else if(description?.touched && description?.hasError('minlength')){
+                    <p class="error-text">Task description must be at least 10 characters long</p>
+                    }
+                    @else if(description?.touched && description?.hasError('pattern')){
+                    <p class="error-text">Task description must contain only alphabets</p>
+                    }
+                </div> -->
+
+                <div class="col_2">
+                    <div class="priority-container">
+                        <label for="priority">Priority:</label>
+                        <select formControlName="priority">
+                            <option value="" disabled>Select Priority</option>
+                            <option value="low">Low</option>
+                            <option value="medium">Medium</option>
+                            <option value="high">High</option>
+                        </select>
+                        <!-- <div class="error-container">
+                            @if(priority?.touched && priority?.hasError('required')){
+                            <p class="error-text">Task priority is required</p>
+                            }
+                        </div> -->
+                    </div>
+
+                    <div class="duedate-container">
+                        <label for="dueDate">Due Date:</label>
+                        <input type="date" placeholder="{{ task.dueDate }}" formControlName="dueDate">
+                        <!-- <div class="error-container">
+                            @if(dueDate?.touched && dueDate?.hasError('required')){
+                            <p class="error-text">Due date is required</p>
+                            }
+                        </div> -->
+                    </div>
                 </div>
-                <div class="field">
-                    <span class="label">Priority</span>
-                    <span class="value" [ngClass]="task.priority">{{ task.priority }}</span>
+
+                <label for="assignedUser">Assigned User:</label>
+                <input type="text" placeholder="{{ task.assignedUser }}" formControlName="assignedUser">
+                <!-- <div class="error-container">
+                    @if(assignedUser?.touched && assignedUser?.hasError('required')){
+                    <p class="error-text">Assigned user is required</p>
+                    }
+                    @else if(assignedUser?.touched && assignedUser?.hasError('pattern')){
+                    <p class="error-text">Please enter a valid user name.</p>
+                    }
+                </div> -->
+
+                <label for="status">Status:</label>
+                <select formControlName="status">
+                    <option value="" disabled>Select Status</option>
+                    <option value="todo" type="Todo">Todo</option>
+                    <option value="in-progress">In Progress</option>
+                    <option value="testing">Testing</option>
+                    <option value="done">Done</option>
+                </select>
+                <!-- <div class="error-container">
+                    @if(status?.touched && status?.hasError('required')){
+                    <p class="error-text">Status is required</p>
+                    }
+                </div> -->
+
+
+                <div class="modal-footer">
+                    <button type="button" class="cancel-btn" (click)="close()">
+                        Cancel
+                    </button>
+                    <button type="submit" class="create-btn">
+                        Create Task
+                    </button>
                 </div>
-            </div>
-            <div class="field">
-                <span class="label">Due Date</span>
-                <span class="value">{{ task.dueDate }}</span>
-            </div>
-        </div>
-        <div class="modal-footer">
-            <button class="cancel-btn" (click)="close()">
-                Close
-            </button>
-        </div>
-    </div>
-</div>
+            <!-- </form> -->
+        <!-- </div> -->
+    <!-- </div> -->

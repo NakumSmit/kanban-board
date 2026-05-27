@@ -1,16 +1,16 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { TasksComponent } from '../tasks/tasks';
 import { AddTaskModalComponent } from '../add-task-modal/add-task-modal';
 import { Tasks } from '../../models/tasks';
-
+import { ViewTaskModal } from '../view-task-modal/view-task-modal';  
 @Component({
   selector: 'app-board',
   standalone:true,
-  imports: [TasksComponent, AddTaskModalComponent],
+  imports: [TasksComponent, AddTaskModalComponent, ViewTaskModal],
   templateUrl: './board.html',
   styleUrl: './board.scss',
 })
-export class BoardComponent {
+export class BoardComponent implements OnInit {
 
   ngOnInit(){
     this.fetchTasks();
@@ -49,5 +49,18 @@ export class BoardComponent {
     }else{
       this.tasks = this.filteredTasks.filter(task => task.title.toLowerCase().includes(searchTerm.toLowerCase()));
     }
+  }
+
+  selectedTask?: Tasks;
+  isViewTaskModalOpen:boolean = false;
+  
+  closeViewTaskModal(){
+    this.isViewTaskModalOpen = false;
+    this.selectedTask = undefined;
+  }
+  
+  editViewTask(task: Tasks) {
+    this.selectedTask = task;
+    this.isViewTaskModalOpen = true;
   }
 }

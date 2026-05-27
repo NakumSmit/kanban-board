@@ -15,7 +15,7 @@
             <div class="task-item" (click)="editViewTask(task)" [ngClass]="column.class">
             <div class="task-card-content">
                 <span class="task-title">
-                    {{task.title | titlecase}}
+                   ✦ {{task.title | titlecase}}
                 </span>
 
                 <br>
@@ -25,7 +25,7 @@
                 </span>
 
                 <p>
-                    {{task.description}}
+                   > {{task.description}}
                 </p>
             </div>
 
@@ -64,9 +64,3 @@
     </div>
     }
 </div>
-@if(isViewTaskModalOpen && selectedTask){
-    <app-view-task-modal 
-        [task]="selectedTask" 
-        (closeModal)="closeViewTaskModal()">
-    </app-view-task-modal>
-}

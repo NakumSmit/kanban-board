@@ -21,7 +21,7 @@
             </div>
         </div>
         <div class="board">
-            <app-tasks [tasks]="tasks"></app-tasks>
+            <app-tasks [tasks]="tasks" (viewTask)="editViewTask($event)"></app-tasks>
         </div>
     </div>
 </div>
@@ -31,4 +31,11 @@
         (closeModal)="closeAddTaskModal()"
         (taskCreated)="addNewTask($event)">
     </app-add-task-modal>
+}
+
+@if(isViewTaskModalOpen && selectedTask){
+    <app-view-task-modal 
+        [task]="selectedTask" 
+        (closeModal)="closeViewTaskModal()">
+    </app-view-task-modal>
 }
