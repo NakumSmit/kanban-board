@@ -2,65 +2,70 @@ import { Component, OnInit } from '@angular/core';
 import { TasksComponent } from '../tasks/tasks';
 import { AddTaskModalComponent } from '../add-task-modal/add-task-modal';
 import { Tasks } from '../../models/tasks';
-import { ViewTaskModal } from '../view-task-modal/view-task-modal';  
+
 @Component({
   selector: 'app-board',
-  standalone:true,
-  imports: [TasksComponent, AddTaskModalComponent, ViewTaskModal],
+  standalone: true,
+  imports: [TasksComponent, AddTaskModalComponent],
   templateUrl: './board.html',
   styleUrl: './board.scss',
 })
+
 export class BoardComponent implements OnInit {
 
-  ngOnInit(){
+  modalMode: 'create' | 'edit' | 'view' = 'create';
+  selectedTask?: Tasks;
+  tasks: Tasks[] = [];
+  filteredTasks: Tasks[] = [];
+  isTaskModalOpen: boolean = false;
+
+  ngOnInit() {
     this.fetchTasks();
   }
-  
-  fetchTasks(){
+
+  fetchTasks() {
     const tasks = localStorage.getItem('tasks');
-    if(tasks){
+    if (tasks) {
       this.tasks = JSON.parse(tasks);
     }
     this.filteredTasks = [...this.tasks];
   }
-  
-  tasks: Tasks[] = [];
-  filteredTasks: Tasks[] = [];
-  isAddTaskModalOpen:boolean = false;
 
-  addNewTask(task: Tasks){
+  addNewTask(task: Tasks) {
     this.tasks = [...this.tasks, task];
-
-    localStorage.setItem('tasks',JSON.stringify(this.tasks));
-  }
-  
-  openAddTaskModal(){
-    this.isAddTaskModalOpen = true;
+    localStorage.setItem('tasks', JSON.stringify(this.tasks));
   }
 
-  closeAddTaskModal(){
-    this.isAddTaskModalOpen = false;
-  }
-
-  searchTasks(event:Event){
-    const searchTerm = (event.target as HTMLInputElement).value;
-    if(searchTerm.trim() === ""){
-      this.fetchTasks();
-    }else{
-      this.tasks = this.filteredTasks.filter(task => task.title.toLowerCase().includes(searchTerm.toLowerCase()));
-    }
-  }
-
-  selectedTask?: Tasks;
-  isViewTaskModalOpen:boolean = false;
-  
-  closeViewTaskModal(){
-    this.isViewTaskModalOpen = false;
+  openAddTaskModal() {
+    this.modalMode = 'create';
     this.selectedTask = undefined;
+    this.isTaskModalOpen = true;
   }
-  
-  editViewTask(task: Tasks) {
+
+  openEditTaskModal(task: Tasks) {
+    this.modalMode = 'edit';
     this.selectedTask = task;
-    this.isViewTaskModalOpen = true;
+    this.isTaskModalOpen = true;
+  }
+
+  openViewTaskModal(task: Tasks) {
+    this.modalMode = 'view';
+    this.selectedTask = task;
+    this.isTaskModalOpen = true;
+  }
+
+  closeTaskModal() {
+    this.isTaskModalOpen = false;
+  }
+
+  searchTasks(event: Event) {
+    const searchTerm = (event.target as HTMLInputElement).value;
+    if (searchTerm.trim() === '') {
+      this.fetchTasks();
+    } else {
+      this.tasks = this.filteredTasks.filter((task) =>
+        task.title.toLowerCase().includes(searchTerm.toLowerCase()),
+      );
+    }
   }
 }

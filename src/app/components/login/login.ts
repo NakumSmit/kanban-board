@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators, } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
 @Component({
@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
   templateUrl: './login.html',
   styleUrls: ['./login.scss', '../../app.scss'],
 })
+
 export class LoginComponent {
 
   private fb = inject(FormBuilder);
@@ -34,16 +35,9 @@ export class LoginComponent {
   }
 
   onSubmit() {
-
     if (this.loginForm.valid) {
-
-      localStorage.setItem(
-        'user',
-        JSON.stringify(this.loginForm.value)
-      );
-
+      localStorage.setItem('user', JSON.stringify(this.loginForm.value));
       console.log(this.loginForm.value);
-
       this.loginForm.reset();
       this.router.navigate(['/dashboard']);
     } else {

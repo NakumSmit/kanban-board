@@ -6,12 +6,11 @@ import {
   OnChanges,
   SimpleChanges,
   Output,
-  EventEmitter
+  EventEmitter,
 } from '@angular/core';
 import { DatePipe, TitleCasePipe, NgClass } from '@angular/common';
 import { Userdata } from '../../services/userdata';
 import { Tasks } from '../../models/tasks';
-
 
 interface KanbanColumn {
   title: string;
@@ -30,38 +29,38 @@ interface KanbanColumn {
 
 export class TasksComponent implements OnInit, OnChanges {
 
+  constructor(private userdata: Userdata) {}
+
   @Input() tasks: Tasks[] = [];
   @Output() viewTask = new EventEmitter<Tasks>();
   users = signal<any[]>([]);
-  
+
   columns: KanbanColumn[] = [
     {
       title: 'Todo',
       status: 'todo',
       class: 'todo-title',
-      tasks: []
+      tasks: [],
     },
     {
       title: 'In Progress',
       status: 'in-progress',
       class: 'in-progress-title',
-      tasks: []
+      tasks: [],
     },
     {
       title: 'Testing',
       status: 'testing',
       class: 'testing-title',
-      tasks: []
+      tasks: [],
     },
     {
       title: 'Done',
       status: 'done',
       class: 'done-title',
-      tasks: []
-    }
+      tasks: [],
+    },
   ];
-
-  constructor(private userdata: Userdata) { }
 
   ngOnInit() {
     this.userdata.getUserData().subscribe((res: any) => {
@@ -76,10 +75,8 @@ export class TasksComponent implements OnInit, OnChanges {
   }
 
   organizeTasksByColumn() {
-    this.columns.forEach(column => {
-      column.tasks = this.tasks.filter(
-        task => task.status === column.status
-      );
+    this.columns.forEach((column) => {
+      column.tasks = this.tasks.filter((task) => task.status === column.status);
     });
   }
 

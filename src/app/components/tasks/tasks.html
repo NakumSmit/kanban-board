@@ -1,66 +1,60 @@
 <div class="main-task-container">
 
-    @for(column of columns; track column.status){
-
+  @for (column of columns; track column.status) {
     <div class="task-column">
-        <div class="top-content">
-            <span class="top-content-title" [ngClass]="column.class">
-                {{column.title}}
-            </span>
-        </div>
+      <div class="top-content">
+        <span class="top-content-title" [ngClass]="column.class">
+          {{ column.title }}
+        </span>
+      </div>
 
-        <div class="task-column-content custom-scrollbar">
-            @for(task of column.tasks; track task.taskId){
+      <div class="task-column-content custom-scrollbar">
+        @for (task of column.tasks; track task.taskId) {
+          <div class="task-item" (click)="editViewTask(task)" [ngClass]="column.class">
 
-            <div class="task-item" (click)="editViewTask(task)" [ngClass]="column.class">
             <div class="task-card-content">
-                <span class="task-title">
-                   ✦ {{task.title | titlecase}}
-                </span>
 
-                <br>
-                <span class="task-date">
-                    <img src="assets/icons/calendar.svg" alt="calendar" class="calendar-icon" />
-                    {{task.dueDate | date:'dd/MM/yyyy'}}
-                </span>
+              <span class="task-title">
+                ✦ {{ task.title | titlecase }} 
+              </span>
 
-                <p>
-                   > {{task.description}}
-                </p>
+              <br />
+
+              <span class="task-date">
+                <img src="assets/icons/calendar.svg" alt="calendar" class="calendar-icon" />
+                {{ task.dueDate | date: 'dd/MM/yyyy' }}
+              </span>
+
+              <p>> {{ task.description }}</p>
             </div>
 
-            <hr class="task-card-footer-border">
-            
+            <hr class="task-card-footer-border" />
+
             <div class="task-card-footer">
-                <div class="priority">
-                    Priority :
-                    @switch(task.priority){
-                        @case("low"){
-                        <span class="priority low">
-                            Low
-                        </span>
-                        }
-                        @case("medium"){
-                        <span class="priority medium">
-                            Medium
-                        </span>
-                        }
-                        @default{
-                        <span class="priority high">
-                            High
-                        </span>
-                        }
-                    }
-                </div>
+              <div class="priority">
+                Priority :
+                @switch (task.priority) {
+                  @case ('low') {
+                    <span class="priority low"> Low </span>
+                  }
+                  @case ('medium') {
+                    <span class="priority medium"> Medium </span>
+                  }
+                  @default {
+                    <span class="priority high"> High </span>
+                  }
+                }
+              </div>
 
-                <span class="priority">
-                    Assigned to:
-                    {{task.assignedUser | titlecase}}
-                </span>
+              <span class="priority">
+                Assigned to:
+                {{ task.assignedUser | titlecase }}
+              </span>
+              
             </div>
-        </div>
+          </div>
         }
-        </div>
+      </div>
     </div>
-    }
+  }
 </div>
