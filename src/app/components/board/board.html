@@ -38,6 +38,7 @@
     [selectedTask]="selectedTask"
     (closeModal)="closeTaskModal()"
     (taskCreated)="addNewTask($event)"
+    (taskUpdated)="updateTask($event)"
     (taskDeleted)="deleteTask($event)">
     </app-add-task-modal>
 }

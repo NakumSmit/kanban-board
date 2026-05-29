@@ -114,9 +114,35 @@
                     <button type="button" class="cancel-btn" (click)="close()">
                         Cancel
                     </button>
-                    <button type="button" class="delete-btn" *ngIf="mode === 'edit'" (click)="deleteTask(this.selectedTask?.taskId)">
+                    <button type="button" class="delete-btn" *ngIf="mode === 'edit'" (click)="showDeleteConfirm = true">
                         Delete
                     </button>
+                    @if(showDeleteConfirm){
+                        <div class="confirm-overlay">
+                            <div class="confirm-modal">
+                                <h3 class="low-weight">Delete Task</h3>
+                                <p style="margin: 10px 0;">
+                                    Are you sure you want to delete
+                                    <strong style="color: #F0E36B;">{{ selectedTask?.title }}</strong>?
+                                </p>
+                                <div class="buttons">
+                                    <button 
+                                        type="button"
+                                        class="cancel-btn"
+                                        (click)="showDeleteConfirm = false">
+                                        Cancel
+                                    </button>
+                                    <button
+                                        type="button"
+                                        class="delete-btn"
+                                        (click)="confirmDelete()">
+                                        Delete
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
                     <button type="submit" class="create-btn">
                         {{ mode === "create" ? "Create Task" : mode === "edit" ? "Update Task" : "Edit" }}
                     </button>

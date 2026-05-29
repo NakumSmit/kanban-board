@@ -36,6 +36,13 @@ export class BoardComponent implements OnInit {
     localStorage.setItem('tasks', JSON.stringify(this.tasks));
   }
 
+  updateTask(updatedTask: Tasks) {
+    this.tasks = this.tasks.map(task => task.taskId === updatedTask.taskId ? updatedTask : task);
+    this.filteredTasks = [...this.tasks];
+    localStorage.setItem('tasks', JSON.stringify(this.tasks));
+    this.closeTaskModal();
+  }
+
   deleteTask(taskId: string) {
     this.tasks = this.tasks.filter(task => task.taskId !== taskId);
     localStorage.setItem('tasks', JSON.stringify(this.tasks));

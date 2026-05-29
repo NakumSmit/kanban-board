@@ -25,6 +25,7 @@ export class AddTaskModalComponent {
 
   @Output() closeModal = new EventEmitter<void>();
   @Output() taskCreated = new EventEmitter<Tasks>();
+  @Output() taskUpdated = new EventEmitter<Tasks>();
   @Output() taskDeleted = new EventEmitter<string>();
 
   ngOnInit() {
@@ -108,16 +109,25 @@ export class AddTaskModalComponent {
       this.taskCreated.emit(newTask);
       this.taskForm.reset();
       this.close();
-
     } else {
       this.taskForm.markAllAsTouched();
     }
   }
-
   deleteTask(taskId: string) {
     this.taskDeleted.emit(taskId);
     this.close();
   }
+
+  showDeleteConfirm = false;
+
+confirmDelete() {
+
+  this.taskDeleted.emit(this.selectedTask!.taskId);
+
+  this.showDeleteConfirm = false;
+  
+  this.close();
+}
 
   gotoEditMode() {
     this.mode = 'edit';
@@ -125,7 +135,6 @@ export class AddTaskModalComponent {
   }
 
   updateTask() {
-    this.mode = 'edit';
     if (this.taskForm.valid && this.selectedTask) {
       const updatedTask: Tasks = {
         taskId: this.selectedTask.taskId,
@@ -136,11 +145,9 @@ export class AddTaskModalComponent {
         assignedUser: this.taskForm.value.assignedUser!,
         status: this.taskForm.value.status! as 'todo' | 'in-progress' | 'testing' | 'done',
       };
-      this.taskCreated.emit(updatedTask);
+      this.taskUpdated.emit(updatedTask);
       this.taskForm.reset();
       this.close();
-      this.selectedTask.taskId = updatedTask.taskId;
-      // this.selectedTask.deleteTask();
     } else {
       this.taskForm.markAllAsTouched();
     }
