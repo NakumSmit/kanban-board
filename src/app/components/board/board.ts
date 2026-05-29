@@ -36,6 +36,11 @@ export class BoardComponent implements OnInit {
     localStorage.setItem('tasks', JSON.stringify(this.tasks));
   }
 
+  deleteTask(taskId: string) {
+    this.tasks = this.tasks.filter(task => task.taskId !== taskId);
+    localStorage.setItem('tasks', JSON.stringify(this.tasks));
+  }
+
   openAddTaskModal() {
     this.modalMode = 'create';
     this.selectedTask = undefined;

@@ -8,12 +8,12 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { NgClass } from '@angular/common';
+import { NgClass, NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-add-task-modal',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, NgIf],
   templateUrl: './add-task-modal.html',
   styleUrls: ['./add-task-modal.scss', '../../app.scss'],
 })
@@ -25,6 +25,7 @@ export class AddTaskModalComponent {
 
   @Output() closeModal = new EventEmitter<void>();
   @Output() taskCreated = new EventEmitter<Tasks>();
+  @Output() taskDeleted = new EventEmitter<string>();
 
   ngOnInit() {
     if (this.selectedTask) {
@@ -108,6 +109,38 @@ export class AddTaskModalComponent {
       this.taskForm.reset();
       this.close();
 
+    } else {
+      this.taskForm.markAllAsTouched();
+    }
+  }
+
+  deleteTask(taskId: string) {
+    this.taskDeleted.emit(taskId);
+    this.close();
+  }
+
+  gotoEditMode() {
+    this.mode = 'edit';
+    this.taskForm.enable();
+  }
+
+  updateTask() {
+    this.mode = 'edit';
+    if (this.taskForm.valid && this.selectedTask) {
+      const updatedTask: Tasks = {
+        taskId: this.selectedTask.taskId,
+        title: this.taskForm.value.title!,
+        description: this.taskForm.value.description!,
+        priority: this.taskForm.value.priority! as 'high' | 'medium' | 'low',
+        dueDate: new Date(this.taskForm.value.dueDate!),
+        assignedUser: this.taskForm.value.assignedUser!,
+        status: this.taskForm.value.status! as 'todo' | 'in-progress' | 'testing' | 'done',
+      };
+      this.taskCreated.emit(updatedTask);
+      this.taskForm.reset();
+      this.close();
+      this.selectedTask.taskId = updatedTask.taskId;
+      // this.selectedTask.deleteTask();
     } else {
       this.taskForm.markAllAsTouched();
     }
