@@ -9,7 +9,7 @@
 
             <div class="search-box">
                 <img src="assets/icons/search.svg" alt="Search" class="search-icon" />
-                <input type="text" placeholder="Search" class="search-input" (input)="searchTasks($event)"/>
+                <input type="text" placeholder="Search" class="search-input" (input)="onSearchInput($event)" />
             </div>
 
             <div class="filter-box">
@@ -27,7 +27,7 @@
         </div>
 
         <div class="board">
-            <app-tasks [tasks]="tasks" (viewTask)="openViewTaskModal($event)"></app-tasks>
+            <app-tasks [tasks]="filteredTasks" (viewTask)="openViewTaskModal($event)"></app-tasks>
         </div>
     </div>
 </div>

@@ -49,9 +49,9 @@ export class TasksComponent implements OnInit, OnChanges {
       tasks: [],
     },
     {
-      title: 'Testing',
-      status: 'testing',
-      class: 'testing-title',
+      title: 'Review',
+      status: 'review',
+      class: 'review-title',
       tasks: [],
     },
     {
