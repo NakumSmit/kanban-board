@@ -20,6 +20,8 @@ export class BoardComponent implements OnInit, OnDestroy {
   tasks: Tasks[] = [];
   filteredTasks: Tasks[] = [];
   isTaskModalOpen: boolean = false;
+  selectedPriority: string = '';
+  selectedAssignee: string = '';
   private searchSubject = new Subject<string>();
   private latestSearchTerm = '';
   private destroy$ = new Subject<void>();
@@ -61,33 +63,29 @@ export class BoardComponent implements OnInit, OnDestroy {
 
   applySearch(searchTerm: string) {
     this.latestSearchTerm = searchTerm;
-    if (!searchTerm) {
-      this.filteredTasks = [...this.tasks];
-      return;
-    }
-    const normalized = searchTerm.toLowerCase();
-    this.filteredTasks = this.tasks.filter((task) =>
-      task.title.toLowerCase().includes(normalized),
-    );
+    this.applyFilters();
   }
 
   addNewTask(task: Tasks) {
     this.tasks = [...this.tasks, task];
     localStorage.setItem('tasks', JSON.stringify(this.tasks));
-    this.applySearch(this.latestSearchTerm);
+    this.applyFilters();
+    // this.applySearch(this.latestSearchTerm);
   }
 
   updateTask(updatedTask: Tasks) {
     this.tasks = this.tasks.map(task => task.taskId === updatedTask.taskId ? updatedTask : task);
     localStorage.setItem('tasks', JSON.stringify(this.tasks));
-    this.applySearch(this.latestSearchTerm);
+    // this.applySearch(this.latestSearchTerm);
+    this.applyFilters();
     this.closeTaskModal();
   }
 
   deleteTask(taskId: string) {
     this.tasks = this.tasks.filter(task => task.taskId !== taskId);
     localStorage.setItem('tasks', JSON.stringify(this.tasks));
-    this.applySearch(this.latestSearchTerm);
+    // this.applySearch(this.latestSearchTerm);
+    this.applyFilters();
   }
 
   openAddTaskModal() {
@@ -110,5 +108,47 @@ export class BoardComponent implements OnInit, OnDestroy {
 
   closeTaskModal() {
     this.isTaskModalOpen = false;
+  }
+
+  onPriorityFilterChange(event: Event) {
+    this.selectedPriority = (event.target as HTMLSelectElement).value;
+    this.applyFilters();
+  }
+
+  uniqueAssignees(): string[] {
+    const normalizedMap = new Map<string, string>();
+    this.tasks.forEach(task => {
+      const assignee = task.assignedUser?.trim();
+      if (assignee) {
+        const key = assignee.toLowerCase();
+        if(!normalizedMap.has(key)){
+          normalizedMap.set(key, assignee);
+        }
+      }    
+    });
+    return Array.from(normalizedMap.values()).sort((a, b) => a.localeCompare(b));
+  }
+
+  onAssigneeFilterChange(event: Event) {
+    this.selectedAssignee = (event.target as HTMLSelectElement).value;
+    this.applyFilters();
+  }
+
+  applyFilters() {
+    const normalizedSearch = this.latestSearchTerm.trim().toLowerCase();
+    const normalizedPriority = this.selectedPriority.trim().toLowerCase();
+    const normalizedAssignee = this.selectedAssignee.trim().toLowerCase();
+
+    this.filteredTasks = this.tasks.filter(task => {
+      const taskTitle = task.title?.trim().toLowerCase() || '';
+      const taskPriority = task.priority?.trim().toLowerCase() || '';
+      const taskAssignee = task.assignedUser?.trim().toLowerCase() || '';
+
+      const matchesSearch = !normalizedSearch || taskTitle.includes(normalizedSearch);
+      const matchesPriority = !normalizedPriority || taskPriority === normalizedPriority;
+      const matchesAssignee = !normalizedAssignee || taskAssignee === normalizedAssignee;
+
+      return matchesSearch && matchesPriority && matchesAssignee;
+    });
   }
 }

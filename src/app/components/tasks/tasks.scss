@@ -23,6 +23,9 @@
         height: 100%;
         min-height: 0;
         overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.5);
+        border-radius: 15px;
+        background-color: rgba(0, 0, 0, 0.4);
     }
 
     .task-column-content {
@@ -30,6 +33,7 @@
         min-height: 0;
         padding-right: 4px;
         margin-bottom: 5px;
+        margin: auto;
     }
 
     .task-title{
@@ -53,19 +57,19 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        background-color: rgb(105, 105, 105, 0.5);      
-        border-radius: 15px;
+        background-color: rgba(105, 105, 105, 0.3);
+        border-radius: 15px 15px 0 0; 
+        border-bottom: 1px solid rgba(255, 255, 255, 0.5);
         color: #fff;
         margin-bottom: 10px;
     }
 
     .top-content-title {
         font-size: 16px;
-        // height: 100%;
         box-sizing: border-box;
         margin: 8px;
         border-radius: 15px;
-        padding: 2px 10px;
+        padding: 3px 15px;
     }
 
     .todo-title {
@@ -105,6 +109,7 @@
             display: block;
             max-height: 420px;
             padding-right: 4px;
+            max-width: 250px;
         }
     }
 
@@ -134,12 +139,22 @@
     padding: 10px;
     margin: 7px 0;
     height: auto;
-    min-height: 130px;
     flex-direction: column;
-    background-color: rgb(105, 105, 105, 0.5);    
+    background-color: rgba(105, 105, 105, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.5);    
     border-radius: 15px;
     cursor: pointer;
-    color: #fff;
+    color: whitesmoke;
+    min-width: 380px;
+    max-width: 380px;
+
+     @media screen and (max-width: 768px) {
+        max-width: 150px;
+    }
+
+     @media screen and (max-width: 480px) {
+        max-width: 100%;
+    }
 
     .task-card-footer{
         display: flex;
@@ -172,16 +187,52 @@
 
 .priority{
     font-weight:300;
+    padding: 2px 8px;
 }
 
 .low{
     color:#4ade80;
+    background-color: rgba(74, 222, 128, 0.2);
+    border: 1px solid rgba(74, 222, 128, 0.55);
+    border-radius: 8px;
 }
 
 .medium{
     color:#facc15;
+    background-color: rgba(250, 204, 21, 0.2);
+    border: 1px solid rgba(250, 204, 21, 0.55);
+    border-radius: 8px;    
 }
 
 .high{
-  color:#f87171;
+    color:#f87171;
+    background-color: rgba(248, 113, 113, 0.2);
+    border: 1px solid rgba(248, 113, 113, 0.55);
+    border-radius: 8px;
+}
+
+.task-card-content{
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+.assigned-user{
+    font-weight:300;
+    padding: 2px 8px;
+    color: #60a5fa;
+    background-color: rgba(96, 165, 250, 0.2);
+    border: 1px solid rgba(96, 165, 250, 0.55);
+    border-radius: 8px;
+}
+
+.task-description {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: break-word;
 }

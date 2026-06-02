@@ -1,6 +1,6 @@
 .navbar-section {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center; 
     padding: 10px;
 }
@@ -24,4 +24,13 @@
     font-size: 18px;
     color: #fff;
     margin: 0;
+}
+
+.nav-link {
+    color: white;
+    text-decoration: none;
+    margin: 0 10px;
+    border: 1px solid #fff;
+    padding: 5px 10px;
+    border-radius: 10px;
 }
