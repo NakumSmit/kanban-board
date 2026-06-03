@@ -13,13 +13,21 @@
             </div>
 
             <div class="filter-box">
-                <select id="priorityFilter" class="filter-select" (change)="onPriorityFilterChange($event)">
+                <select 
+                id="priorityFilter" 
+                class="filter-select" 
+                [value]="selectedPriority" 
+                (change)="onPriorityFilterChange($event)">
                     <option value="">All Priorities</option>
                     <option value="low">Low Priority</option>
                     <option value="medium">Medium Priority</option>
                     <option value="high">High Priority</option>
                 </select>
-                <select id="assigneeFilter" class="filter-select" (change)="onAssigneeFilterChange($event)">
+                <select 
+                id="assigneeFilter" 
+                class="filter-select" 
+                [value]="selectedAssignee" 
+                (change)="onAssigneeFilterChange($event)">
                     <option value="">All Assignees</option>
                     @for (user of uniqueAssignees(); track user) {
                         <option [value]="user">{{ user}}</option>
@@ -36,8 +44,12 @@
 
         <div class="board">
             <app-tasks 
-            [tasks]="filteredTasks" 
-            (viewTask)="openViewTaskModal($event)">
+            [tasks]="tasks"
+            [searchTerm]="displaySearchTerm"
+            [selectedPriority]="selectedPriority"
+            [selectedAssignee]="selectedAssignee" 
+            (viewTask)="openViewTaskModal($event)"
+            (taskStatusChanged)="updateTaskStatusAfterDrop($event)">
             </app-tasks>
         </div>
     </div>

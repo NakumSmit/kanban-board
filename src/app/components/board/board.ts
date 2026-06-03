@@ -22,6 +22,7 @@ export class BoardComponent implements OnInit, OnDestroy {
   isTaskModalOpen: boolean = false;
   selectedPriority: string = '';
   selectedAssignee: string = '';
+  displaySearchTerm: string = '';
   private searchSubject = new Subject<string>();
   private latestSearchTerm = '';
   private destroy$ = new Subject<void>();
@@ -63,6 +64,7 @@ export class BoardComponent implements OnInit, OnDestroy {
 
   applySearch(searchTerm: string) {
     this.latestSearchTerm = searchTerm;
+    this.displaySearchTerm = searchTerm;
     this.applyFilters();
   }
 
@@ -84,7 +86,8 @@ export class BoardComponent implements OnInit, OnDestroy {
   deleteTask(taskId: string) {
     this.tasks = this.tasks.filter(task => task.taskId !== taskId);
     localStorage.setItem('tasks', JSON.stringify(this.tasks));
-    // this.applySearch(this.latestSearchTerm);
+    this.selectedPriority = '';
+    this.selectedAssignee = '';
     this.applyFilters();
   }
 
@@ -150,5 +153,10 @@ export class BoardComponent implements OnInit, OnDestroy {
 
       return matchesSearch && matchesPriority && matchesAssignee;
     });
+  }
+  updateTaskStatusAfterDrop(updatedTask: Tasks[]) {
+    this.tasks = updatedTask;
+    localStorage.setItem('tasks', JSON.stringify(this.tasks));
+    this.applyFilters();
   }
 }
