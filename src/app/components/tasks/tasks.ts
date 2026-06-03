@@ -9,7 +9,7 @@ import {
   EventEmitter,
 } from '@angular/core';
 import { DatePipe, TitleCasePipe, NgClass } from '@angular/common';
-import { Userdata } from '../../services/userdata';
+import { Userdata } from '../../services/userdata/userdata';
 import { Tasks } from '../../models/tasks';
 import {
   DragDropModule,
@@ -108,8 +108,7 @@ export class TasksComponent implements OnInit, OnChanges {
 
     const matchesSearch =
       !normalizedSearch ||
-      taskTitle.includes(normalizedSearch) ||
-      taskDescription.includes(normalizedSearch);
+      taskTitle.includes(normalizedSearch);
 
     const matchesPriority = !normalizedPriority || taskPriority === normalizedPriority;
 
