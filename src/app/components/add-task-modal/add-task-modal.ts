@@ -104,7 +104,7 @@ export class AddTaskModalComponent {
         priority: this.taskForm.value.priority! as 'high' | 'medium' | 'low',
         dueDate: new Date(this.taskForm.value.dueDate!),
         assignedUser: this.taskForm.value.assignedUser!,
-        status: this.taskForm.value.status! as 'todo' | 'in-progress' | 'testing' | 'done',
+        status: this.taskForm.value.status! as 'todo' | 'in-progress' | 'review' | 'done',
       };
       this.taskCreated.emit(newTask);
       this.taskForm.reset();
@@ -143,7 +143,7 @@ confirmDelete() {
         priority: this.taskForm.value.priority! as 'high' | 'medium' | 'low',
         dueDate: new Date(this.taskForm.value.dueDate!),
         assignedUser: this.taskForm.value.assignedUser!,
-        status: this.taskForm.value.status! as 'todo' | 'in-progress' | 'testing' | 'done',
+        status: this.taskForm.value.status! as 'todo' | 'in-progress' | 'review' | 'done',
       };
       this.taskUpdated.emit(updatedTask);
       this.taskForm.reset();

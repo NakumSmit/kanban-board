@@ -8,9 +8,19 @@
         </span>
       </div>
 
-      <div class="task-column-content custom-scrollbar">
+      <div 
+      class="task-column-content custom-scrollbar"
+      cdkDropList
+      [id]="column.status"
+      [cdkDropListData]="column.tasks"
+      [cdkDropListConnectedTo]="connectedDropLists"
+      (cdkDropListDropped)="drop($event, column.status)">
         @for (task of column.tasks; track task.taskId) {
-          <div class="task-item" (click)="editViewTask(task)" [ngClass]="column.class">
+          <div 
+          class="task-item" 
+          (click)="editViewTask(task)" 
+          cdkDrag 
+          [cdkDragData]="task">
 
             <div class="task-card-content">
 
@@ -21,17 +31,17 @@
               <br />
 
               <span class="task-date">
-                <img src="assets/icons/calendar.svg" alt="calendar" class="calendar-icon" />
+                📅
                 {{ task.dueDate | date: 'dd/MM/yyyy' }}
               </span>
 
-              <p>> {{ task.description }}</p>
+              <p class="task-description">➤ {{ task.description }}</p>
             </div>
 
             <hr class="task-card-footer-border" />
 
             <div class="task-card-footer">
-              <div class="priority">
+              <div class="priority-label">
                 Priority :
                 @switch (task.priority) {
                   @case ('low') {
@@ -46,7 +56,7 @@
                 }
               </div>
 
-              <span class="priority">
+              <span class="assigned-user">
                 Assigned to:
                 {{ task.assignedUser | titlecase }}
               </span>

@@ -5,5 +5,5 @@ export interface Tasks {
     priority: "high" | "medium" | "low",
     dueDate: Date,
     assignedUser: string,
-    status: "todo" | "in-progress" | "testing" | "done",
+    status: "todo" | "in-progress" | "review" | "done",
 }
