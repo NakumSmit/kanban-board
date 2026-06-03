@@ -1,16 +1,22 @@
 <div class="modal-overlay" (click)="close()">
     <div class="modal-container" (click)="$event.stopPropagation()">
         <div class="modal-header">
-            <h2>Create Task</h2>
-            <button class="close-btn" (click)="close()">
-                ✕
-            </button>
+            <h2>{{mode === "create" ? "Create Task" : mode === "edit" ? "Edit Task" : "View Task"}}</h2>
+            <button class="close-btn" (click)="close()"> ✕ </button>
         </div>
         <div class="modal-body">
 
-            <form [formGroup]="taskForm" (ngSubmit)="addTask()">
+            <form [formGroup]="taskForm" (ngSubmit)="mode === 'create' ? addTask() : mode === 'edit' ? updateTask() : gotoEditMode()">
 
-                <input type="text" placeholder="Task title" formControlName="title">
+                <label for="title">Title:</label>
+                <input type="text"
+                [placeholder]="
+                mode === 'create'
+                ? 'Enter Task Title'
+                : mode === 'edit'
+                ? 'Edit Task Title'
+                : 'View Task Title'" 
+                formControlName="title">
                 <div class="error-container">
                     @if(title?.touched && title?.hasError('required')){
                     <p class="error-text">Task title is required</p>
@@ -23,7 +29,15 @@
                     }
                 </div>
 
-                <input type="text" placeholder="Task Description" formControlName="description">
+                <label for="description">Description:</label>
+                <input type="text" 
+                [placeholder]="
+                mode === 'create'
+                ? 'Enter Task Description'
+                : mode === 'edit'
+                ? 'Edit Task Description'
+                : 'View Task Description'" 
+                formControlName="description">
                 <div class="error-container">
                     @if(description?.touched && description?.hasError('required')){
                     <p class="error-text">Task description is required</p>
@@ -38,8 +52,9 @@
 
                 <div class="col_2">
                     <div class="priority-container">
+                        <label for="priority">Priority:</label>
                         <select formControlName="priority">
-                            <option value="" disabled selected>Select Priority</option>
+                            <option value="" disabled>Select Priority</option>
                             <option value="low">Low</option>
                             <option value="medium">Medium</option>
                             <option value="high">High</option>
@@ -52,6 +67,7 @@
                     </div>
 
                     <div class="duedate-container">
+                        <label for="dueDate">Due Date:</label>
                         <input type="date" placeholder="Due Date" formControlName="dueDate">
                         <div class="error-container">
                             @if(dueDate?.touched && dueDate?.hasError('required')){
@@ -61,7 +77,15 @@
                     </div>
                 </div>
 
-                <input type="text" placeholder="Assigned User" formControlName="assignedUser">
+                <label for="assignedUser">Assigned User:</label>
+                <input type="text" 
+                [placeholder]="
+                mode === 'create'
+                ? 'Enter Assigned User'
+                : mode === 'edit'
+                ? 'Edit Assigned User'
+                : 'View Assigned User'" 
+                formControlName="assignedUser">
                 <div class="error-container">
                     @if(assignedUser?.touched && assignedUser?.hasError('required')){
                     <p class="error-text">Assigned user is required</p>
@@ -71,11 +95,12 @@
                     }
                 </div>
 
+                <label for="status">Status:</label>
                 <select formControlName="status">
-                    <option value="" disabled selected>Select Status</option>
-                    <option value="todo" type="Todo">Todo</option>
+                    <option value="" disabled>Select Status</option>
+                    <option value="todo">Todo</option>
                     <option value="in-progress">In Progress</option>
-                    <option value="testing">Testing</option>
+                    <option value="review">Review</option>
                     <option value="done">Done</option>
                 </select>
                 <div class="error-container">
@@ -89,8 +114,37 @@
                     <button type="button" class="cancel-btn" (click)="close()">
                         Cancel
                     </button>
+                    <button type="button" class="delete-btn" *ngIf="mode === 'edit'" (click)="showDeleteConfirm = true">
+                        Delete
+                    </button>
+                    @if(showDeleteConfirm){
+                        <div class="confirm-overlay">
+                            <div class="confirm-modal">
+                                <h3 class="low-weight">Delete Task</h3>
+                                <p style="margin: 10px 0;">
+                                    Are you sure you want to delete
+                                    <strong style="color: #F0E36B;">{{ selectedTask?.title }}</strong>?
+                                </p>
+                                <div class="buttons">
+                                    <button 
+                                        type="button"
+                                        class="cancel-btn"
+                                        (click)="showDeleteConfirm = false">
+                                        Cancel
+                                    </button>
+                                    <button
+                                        type="button"
+                                        class="delete-btn"
+                                        (click)="confirmDelete()">
+                                        Delete
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
                     <button type="submit" class="create-btn">
-                        Create Task
+                        {{ mode === "create" ? "Create Task" : mode === "edit" ? "Update Task" : "Edit" }}
                     </button>
                 </div>
             </form>

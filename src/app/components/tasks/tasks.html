@@ -1,65 +1,70 @@
 <div class="main-task-container">
 
-    @for(column of columns; track column.status){
+  @for (column of columns; track column.status) {
+    <div class="task-column">
+      <div class="top-content">
+        <span class="top-content-title" [ngClass]="column.class">
+          {{ column.title }}
+        </span>
+      </div>
 
-    <div class="task-card">
-        <div class="top-content">
-            <span class="top-content-title"
-                  [ngClass]="column.class">
-                {{column.title}}
-            </span>
-        </div>
+      <div 
+      class="task-column-content custom-scrollbar"
+      cdkDropList
+      [id]="column.status"
+      [cdkDropListData]="column.tasks"
+      [cdkDropListConnectedTo]="connectedDropLists"
+      (cdkDropListDropped)="drop($event, column.status)">
+        @for (task of column.tasks; track task.taskId) {
+          <div 
+          class="task-item" 
+          (click)="editViewTask(task)" 
+          cdkDrag 
+          [cdkDragData]="task">
 
-        @for(task of column.tasks; track task.taskId){
-
-        <div class="task-item" (click)="editViewTask(task)">
             <div class="task-card-content">
-                <span class="task-title">
-                    {{task.title | titlecase}}
-                </span>
 
-                <br>
-                <span class="task-date">
-                    <img src="assets/icons/calendar.svg" alt="calendar" class="calendar-icon" />
-                    {{task.dueDate | date:'dd/MM/yyyy'}}
-                </span>
+              <span class="task-title">
+                ✦ {{ task.title | titlecase }} 
+              </span>
 
-                <p>
-                    {{task.description}}
-                </p>
+              <br />
+
+              <span class="task-date">
+                📅
+                {{ task.dueDate | date: 'dd/MM/yyyy' }}
+              </span>
+
+              <p class="task-description">➤ {{ task.description }}</p>
             </div>
 
-            <hr class="task-card-footer-border">
-            
+            <hr class="task-card-footer-border" />
+
             <div class="task-card-footer">
-                <div class="priority">
-                    Priority :
-                    @switch(task.priority){
-                        @case("low"){
-                        <span class="priority low">
-                            Low
-                        </span>
-                        }
-                        @case("medium"){
-                        <span class="priority medium">
-                            Medium
-                        </span>
-                        }
-                        @default{
-                        <span class="priority high">
-                            High
-                        </span>
-                        }
-                    }
-                </div>
+              <div class="priority-label">
+                Priority :
+                @switch (task.priority) {
+                  @case ('low') {
+                    <span class="priority low"> Low </span>
+                  }
+                  @case ('medium') {
+                    <span class="priority medium"> Medium </span>
+                  }
+                  @default {
+                    <span class="priority high"> High </span>
+                  }
+                }
+              </div>
 
-                <span class="priority">
-                    Assigned to:
-                    {{task.assignedUser | titlecase}}
-                </span>
+              <span class="assigned-user">
+                Assigned to:
+                {{ task.assignedUser | titlecase }}
+              </span>
+              
             </div>
-        </div>
+          </div>
         }
+      </div>
     </div>
-    }
+  }
 </div>

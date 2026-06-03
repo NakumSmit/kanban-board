@@ -4,10 +4,21 @@
   -webkit-backdrop-filter: blur(16px);
   padding: 0px 20px;
   // margin: 10px;
-  min-height: calc(100dvh - 40px);
+  height: calc(100dvh - 40px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
   color: #fff;
   box-sizing: border-box;
   border: 8px solid rgba(0, 0, 0, 0.6);
   border-radius: 24px;
+}
+
+@media screen and (max-width: 768px) {
+  .glass-box {
+    height: auto;
+    min-height: calc(100dvh - 40px);
+    overflow: visible;
+  }
 }

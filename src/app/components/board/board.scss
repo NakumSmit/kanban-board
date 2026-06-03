@@ -1,22 +1,29 @@
+:host {
+    display: block;
+    flex: 1;
+    min-height: 0;
+}
+
 .title {
     font-size: 30px;
+    margin-bottom: 15px;
+    margin-top: 3px;
 }
 
 .search-box{
-    min-height: 38px;
+    min-height: 45px;
     min-width: 10%;
     display: flex;
     align-items: center;
-    max-width: 280px;
-
+    max-width: 500px;
     @media screen and (max-width: 550px) {
         max-width: 100%;
     }
 }
 
 .search-input {
-    height: 38px;
-    width: 280px;
+    height: 45px;
+    width: 500px;
     background-color: rgb(105, 105, 105, 0.5);
     border-radius: 30px;
     padding-left: 35px;
@@ -29,6 +36,14 @@
     }
 }
 
+.search-input:focus,
+.search-input:active,
+.search-input:focus-visible {
+    outline: none;
+    border: none;
+    box-shadow: none;
+}
+
 .search-icon {
     position: absolute;
     margin: 10px;
@@ -37,28 +52,6 @@
     width: 20px;
     pointer-events: none;
     z-index: 999;
-}
-
-.filter-button {
-    background-color: rgb(105, 105, 105, 0.5);
-    border-radius: 30px;
-    border: none;
-    color: #fff !important;
-    font-size: 15px;
-    padding: 10px 20px;
-    height: 38px;
-    width: 100px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 5px;
-
-    .filter-icon {
-        object-fit: contain;
-        height: 20px;
-        width: 20px;
-        filter: brightness(0) invert(1);
-    }  
 }
 
 .top-content {
@@ -73,7 +66,7 @@
 
     @media screen and (max-width: 550px) {
         flex-direction: column;
-        align-items: start;    
+        align-items: start;
         justify-content: flex-start;
     }
 }
@@ -93,6 +86,82 @@
     padding: 10px 20px;
     height: 38px;
     width: 120px;
+    cursor: pointer;
     background-color: #F0E36B;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+.board-container {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+
+    transform: scale(0.8);
+    transform-origin: top left;
+
+    width: 125%;
+    height: 125%;
+}
+
+.board-content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.board {
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+    padding-bottom: 20px;
+}
+
+@media screen and (max-width: 768px) {
+    :host {
+        height: auto;
+        display: block;
+        flex: none;
+    }
+
+    .board-container {
+        transform: none;
+        width: 100%;
+        height: auto;
+        overflow: visible;
+    }
+
+    .board-content {
+        display: block;
+        height: auto;
+        overflow: visible;
+    }
+
+    .board {
+        display: block;
+        height: auto;
+        overflow: visible;
+        padding-bottom: 20px;
+    }
+}
+
+.filter-select {
+    height: 45px;
+    margin: 2px;
+    background-color: rgb(105, 105, 105, 0.5);
+    border-radius: 30px;
+    padding: 0 10px;
+    border: none;
+    color: #fff !important;
+    font-size: 15px;
+    margin-right: 10px;
+
+    &:focus,
+    &:active{
+        outline: none;
+        border: none;
+        box-shadow: none;
+        background-color: rgb(105, 105, 105, 0.9);
+    }
 }

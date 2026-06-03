@@ -1,33 +1,67 @@
 <div class="board-container">
+
     <div class="board-header">
         <p class="title">Tasks</p>
     </div>
+
     <div class="board-content">
         <div class="top-content">
+
             <div class="search-box">
                 <img src="assets/icons/search.svg" alt="Search" class="search-icon" />
-                <input type="text" placeholder="Search" class="search-input" (input)="searchTasks($event)"/>
+                <input type="text" placeholder="Search" class="search-input" (input)="onSearchInput($event)" />
             </div>
+
             <div class="filter-box">
-                <button class="filter-button">
-                    <img src="assets/icons/filter.svg" alt="Filter" class="filter-icon" />
-                    Filter
-                </button>
+                <select 
+                id="priorityFilter" 
+                class="filter-select" 
+                [value]="selectedPriority" 
+                (change)="onPriorityFilterChange($event)">
+                    <option value="">All Priorities</option>
+                    <option value="low">Low Priority</option>
+                    <option value="medium">Medium Priority</option>
+                    <option value="high">High Priority</option>
+                </select>
+                <select 
+                id="assigneeFilter" 
+                class="filter-select" 
+                [value]="selectedAssignee" 
+                (change)="onAssigneeFilterChange($event)">
+                    <option value="">All Assignees</option>
+                    @for (user of uniqueAssignees(); track user) {
+                        <option [value]="user">{{ user}}</option>
+                    }
+                </select>
             </div>
+
             <div class="top-right">
                 <button class="add-task-button" (click)="openAddTaskModal()">
                     + Add Task
                 </button>
-                @if(isAddTaskModalOpen){
-                    <app-add-task-modal 
-                    (closeModal)="closeAddTaskModal()"
-                    (taskCreated)="addNewTask($event)">
-                </app-add-task-modal>
-                }
             </div>
         </div>
+
         <div class="board">
-            <app-tasks [tasks]="tasks"></app-tasks>
+            <app-tasks 
+            [tasks]="tasks"
+            [searchTerm]="displaySearchTerm"
+            [selectedPriority]="selectedPriority"
+            [selectedAssignee]="selectedAssignee" 
+            (viewTask)="openViewTaskModal($event)"
+            (taskStatusChanged)="updateTaskStatusAfterDrop($event)">
+            </app-tasks>
         </div>
     </div>
 </div>
+
+@if(isTaskModalOpen){
+    <app-add-task-modal
+    [mode]="modalMode"
+    [selectedTask]="selectedTask"
+    (closeModal)="closeTaskModal()"
+    (taskCreated)="addNewTask($event)"
+    (taskUpdated)="updateTask($event)"
+    (taskDeleted)="deleteTask($event)">
+    </app-add-task-modal>
+}
