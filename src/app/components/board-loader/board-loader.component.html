@@ -1,0 +1,36 @@
+<div class="skeleton-loader-wrapper">
+    <div class="skeleton-board">
+
+        @for(column of skeletonColumns; track column.title){
+            <div class="skeleton-column">
+
+                <div class="skeleton-column-header">
+                    <span class="skeleton-column-title" [class]="column.class">
+                        {{column.title}}
+                    </span>
+                </div>
+
+                <div class="skeleton-column-content">
+
+                    @for(card of skeletonCards; track card){
+                        <div class="skeleton-card">
+
+                            <div class="skeleton skeleton-line skeleton-title-line"></div>
+                            <div class="skeleton skeleton-line skeleton-date-line"></div>
+                            <div class="skeleton skeleton-line skeleton-description-line"></div>
+                            <div class="skeleton skeleton-line skeleton-description-short-line"></div>
+
+                            <hr class="skeleton-card-border">
+
+                            <div class="skeleton-card-footer">
+                                <div class="skeleton skeleton-badge"></div>
+                                <div class="skeleton skeleton-assignee"></div>
+                            </div>
+
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+</div>

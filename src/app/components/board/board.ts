@@ -4,11 +4,12 @@ import { AddTaskModalComponent } from '../add-task-modal/add-task-modal';
 import { Tasks } from '../../models/tasks';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map, takeUntil } from 'rxjs/operators';
+import { BoardLoaderComponent } from '../board-loader/board-loader.component';
 
 @Component({
   selector: 'app-board',
   standalone: true,
-  imports: [TasksComponent, AddTaskModalComponent],
+  imports: [TasksComponent, AddTaskModalComponent, BoardLoaderComponent],
   templateUrl: './board.html',
   styleUrl: './board.scss',
 })
@@ -23,12 +24,15 @@ export class BoardComponent implements OnInit, OnDestroy {
   selectedPriority: string = '';
   selectedAssignee: string = '';
   displaySearchTerm: string = '';
+  isLoading: boolean = true;
   private searchSubject = new Subject<string>();
   private latestSearchTerm = '';
   private destroy$ = new Subject<void>();
   constructor(private ngZone: NgZone, private cdr: ChangeDetectorRef) {}
 
   ngOnInit() {
+    this.startBoardLoading();
+
     this.fetchTasks();
     this.searchSubject.pipe(
       map((value) => (value ?? '').trim()),
@@ -48,6 +52,16 @@ export class BoardComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
+  startBoardLoading(){
+    this.isLoading = true;
+
+    setTimeout(() => {
+      this.fetchTasks();
+      this.isLoading = false;
+      this.cdr.detectChanges();
+    }, 5000);
+  }
+
   fetchTasks() {
     const tasks = localStorage.getItem('tasks');
     if (tasks) {
@@ -65,6 +79,15 @@ export class BoardComponent implements OnInit, OnDestroy {
   applySearch(searchTerm: string) {
     this.latestSearchTerm = searchTerm;
     this.displaySearchTerm = searchTerm;
+    this.applyFilters();
+  }
+
+  resetFilters(){
+    this.displaySearchTerm = '';  
+    this.latestSearchTerm = '';
+    this.selectedAssignee = '';
+    this.selectedPriority = '';
+    this.searchSubject.next('');
     this.applyFilters();
   }
 
