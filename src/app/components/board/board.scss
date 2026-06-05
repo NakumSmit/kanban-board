@@ -2,31 +2,33 @@
     display: block;
     flex: 1;
     min-height: 0;
+    width: 100%;
 }
 
 .title {
     font-size: 30px;
-    margin-bottom: 15px;
-    margin-top: 3px;
+    margin: 3px 0 15px;
+    line-height: 1.2;
 }
 
 .search-box{
+    position: relative;
     min-height: 45px;
-    min-width: 10%;
+    width: 100%;
     display: flex;
     align-items: center;
-    max-width: 500px;
-    @media screen and (max-width: 550px) {
-        max-width: 100%;
-    }
+    min-width: 0;
+    // max-width: 500px;
+    // flex: 1 1 320px;
 }
 
 .search-input {
     height: 45px;
-    width: 500px;
+    width: 100%;
+    min-width: 0;
     background-color: rgb(105, 105, 105, 0.5);
     border-radius: 30px;
-    padding-left: 35px;
+    padding: 0 16px 0 42px;
     border: none;
     color: #fff !important;
     font-size: 15px;
@@ -46,34 +48,37 @@
 
 .search-icon {
     position: absolute;
-    margin: 10px;
+    left: 14px;
+    // margin: 10px;
     object-fit: contain;
     height: 20px;
     width: 20px;
     pointer-events: none;
-    z-index: 999;
+    z-index: 2;
 }
 
 .top-content {
+    display: grid;
+    grid-template-columns: minmax(260px, 1fr) auto auto;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    // flex-wrap:wrap;
+    margin-top: 0;
+}
+
+.filter-box {
     display: flex;
     align-items: center;
     gap: 10px;
-
-    @media screen and (max-width: 768px) {
-        flex-direction: row;
-        align-items: flex-start;
-    }
-
-    @media screen and (max-width: 550px) {
-        flex-direction: column;
-        align-items: start;
-        justify-content: flex-start;
-    }
+    min-width: 0;
+    // flex-wrap: wrap;
 }
 
 .top-right {
     display: flex;
-    flex: 1;
+    // flex: 1 1 auto;
+    min-width: 0;
     justify-content: flex-end;
     align-items: center;
 }
@@ -84,8 +89,8 @@
     color: black;
     font-size: 15px;
     padding: 10px 20px;
-    height: 38px;
-    width: 120px;
+    height: 45px;
+    min-width: 130px;
     cursor: pointer;
     background-color: #F0E36B;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
@@ -95,18 +100,16 @@
     display: flex;
     flex-direction: column;
     overflow: hidden;
-
-    transform: scale(0.8);
-    transform-origin: top left;
-
-    width: 125%;
-    height: 125%;
+    min-height: 0;
+    width: 100%;
+    height: calc(100dvh - 40px);
 }
 
 .board-content {
     display: flex;
     flex-direction: column;
     flex: 1;
+    // height: 100%;
     min-height: 0;
     overflow: hidden;
 }
@@ -115,10 +118,44 @@
     flex: 1;
     min-height: 0;
     overflow: hidden;
-    padding-bottom: 20px;
+    padding-bottom: 8px;
 }
 
-@media screen and (max-width: 768px) {
+.filter-select {
+    height: 45px;
+    min-width: 150px;
+    background-color: rgb(105, 105, 105, 0.5);
+    border-radius: 30px;
+    padding: 0 14px;
+    border: none;
+    color: #fff !important;
+    font-size: 15px;
+
+    &:focus,
+    &:active{
+        outline: none;
+        border: none;
+        box-shadow: none;
+        background-color: rgba(105, 105, 105, 0.9);
+    }
+}
+
+.reset-btn{
+    padding: 0 18px;
+    height: 45px;
+    background-color: rgb(105, 105, 105, 0.5);
+    border-radius: 30px;
+    border: none;
+    color: #fff !important;
+    font-size: 15px;
+    cursor: pointer;
+
+    &:hover{
+        background-color: rgba(105, 105, 105, 0.8);
+    }
+}
+
+@media screen and (max-width: 1024px) {
     :host {
         height: auto;
         display: block;
@@ -126,42 +163,137 @@
     }
 
     .board-container {
-        transform: none;
-        width: 100%;
         height: auto;
+        min-height: 100%;
         overflow: visible;
+        transform: scale(0.8);
     }
 
     .board-content {
-        display: block;
-        height: auto;
         overflow: visible;
     }
 
     .board {
-        display: block;
-        height: auto;
         overflow: visible;
-        padding-bottom: 20px;
+    }
+
+    .title{
+        font-size: 24px;
+        margin: 2px 0 10px;
+    }
+
+    .top-content {
+        grid-template-columns: 1fr;
+        align-items: stretch;
+        gap: 10px;
+    }
+
+    .search-box{
+        min-height: 38px;
+    }
+
+    .search-input,
+    .filter-select,
+    .reset-btn,
+    .add-task-button {
+        height: 38px;
+        font-size: 13px;
+    }
+
+    .filter-box {
+        width: 100%;
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .filter-select,
+    .reset-btn {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .top-right {
+        width: 100%;
+        justify-content: stretch;
+    }
+
+    .add-task-button {
+        width: 100%;
     }
 }
 
-.filter-select {
-    height: 45px;
-    margin: 2px;
-    background-color: rgb(105, 105, 105, 0.5);
-    border-radius: 30px;
-    padding: 0 10px;
-    border: none;
-    color: #fff !important;
-    font-size: 15px;
-    margin-right: 10px;
+@media screen and (max-width: 599px) {
+    .title{
+        font-size: 24px;
+        margin-bottom: 10px;
+    }
 
-    &:focus,
-    &:active{
-        outline: none;
-        border: none;
-        box-shadow: none;
-        background-color: rgb(105, 105, 105, 0.9);
+    .top-content {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .filter-box {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .filter-select{
+        width: 100%;
+        min-width: 0;
+    }
+
+    .reset-btn{
+        grid-column: 1 / -1;
+        width: 100%;
+    }
+
+    .search-input,
+    .filter-select,
+    .reset-btn,
+    .add-task-button {
+        height: 44px;
+        font-size: 14px;
+    }
+
+    .search-input{
+        padding-left: 40px;
+    }
+}
+
+@media screen and (max-width: 360px) {
+    .search-input {
+        padding-left: 38px;
+        font-size: 13px;
+    }
+
+    .search-icon {
+        left: 12px;
+        width: 18px;
+        height: 18px;
+    }
+}
+
+@media screen and (min-width: 1025px) {
+    .board-container{
+        height: calc(100dvh - 40px);
+        overflow: hidden;
+    }
+
+    .top-content {
+        gap: 10px;
+    }
+
+    .search-input,
+    .filter-select,
+    .reset-btn,
+    .add-task-button {
+        height: 42px;
+    }
+
+    .search-box {
+        min-height: 42px;
     }
 }

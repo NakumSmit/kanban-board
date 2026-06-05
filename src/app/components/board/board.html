@@ -9,7 +9,12 @@
 
             <div class="search-box">
                 <img src="assets/icons/search.svg" alt="Search" class="search-icon" />
-                <input type="text" placeholder="Search" class="search-input" (input)="onSearchInput($event)" />
+                <input 
+                type="text"
+                [value]="displaySearchTerm"
+                placeholder="Search by Task title" 
+                class="search-input" 
+                (input)="onSearchInput($event)" />
             </div>
 
             <div class="filter-box">
@@ -33,6 +38,7 @@
                         <option [value]="user">{{ user}}</option>
                     }
                 </select>
+                <button type="button" class="reset-btn" (click)="resetFilters()">Reset Filters</button>
             </div>
 
             <div class="top-right">
@@ -41,6 +47,10 @@
                 </button>
             </div>
         </div>
+        
+        @if(isLoading){
+            <app-board-loader></app-board-loader>
+        }@else {
 
         <div class="board">
             <app-tasks 
@@ -52,6 +62,7 @@
             (taskStatusChanged)="updateTaskStatusAfterDrop($event)">
             </app-tasks>
         </div>
+        }
     </div>
 </div>
 

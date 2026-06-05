@@ -1,6 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -14,6 +15,7 @@ export class LoginComponent {
 
   private fb = inject(FormBuilder);
   private router = inject(Router);
+  private authService = inject(AuthService);
 
   user: any;
   loginForm = this.fb.nonNullable.group({
@@ -36,10 +38,14 @@ export class LoginComponent {
 
   onSubmit() {
     if (this.loginForm.valid) {
+      const email = this.loginForm.value.email ?? '';
+      const password = this.loginForm.value.password ?? '';
+      const success = this.authService.login(email, password);
+      if(success){
       localStorage.setItem('user', JSON.stringify(this.loginForm.value));
-      console.log(this.loginForm.value);
       this.loginForm.reset();
       this.router.navigate(['/dashboard']);
+      }
     } else {
       this.loginForm.markAllAsTouched();
     }

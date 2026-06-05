@@ -7,9 +7,14 @@ import {
   SimpleChanges,
   Output,
   EventEmitter,
+  AfterViewInit,
+  OnDestroy,
+  ViewChildren,
+  QueryList,
+  ElementRef,
 } from '@angular/core';
 import { DatePipe, TitleCasePipe, NgClass } from '@angular/common';
-import { Userdata } from '../../services/userdata';
+import { Userdata } from '../../services/userdata/userdata';
 import { Tasks } from '../../models/tasks';
 import {
   DragDropModule,
@@ -17,6 +22,8 @@ import {
   moveItemInArray,
   transferArrayItem,
 } from '@angular/cdk/drag-drop';
+import { fromEvent, Subject } from 'rxjs';
+import { takeUntil, throttleTime } from 'rxjs/operators';
 
 type taskStatus = 'todo' | 'in-progress' | 'review' | 'done';
 interface KanbanColumn {
@@ -33,8 +40,12 @@ interface KanbanColumn {
   templateUrl: './tasks.html',
   styleUrls: ['./tasks.scss', '../../app.scss'],
 })
-export class TasksComponent implements OnInit, OnChanges {
+export class TasksComponent implements OnInit, OnChanges, AfterViewInit, OnDestroy {
   constructor(private userdata: Userdata) {}
+
+  @ViewChildren('columnScrollContainer')
+  columnScrollContainers!: QueryList<ElementRef<HTMLElement>>;
+  private destroy$ = new Subject<void>();
 
   @Input() tasks: Tasks[] = [];
   @Output() viewTask = new EventEmitter<Tasks>();
@@ -71,9 +82,11 @@ export class TasksComponent implements OnInit, OnChanges {
       tasks: [],
     },
   ];
-
+  
   ngOnInit() {
-    this.userdata.getUserData().subscribe((res: any) => {
+    this.userdata.getUserData()
+    .pipe(takeUntil(this.destroy$))
+    .subscribe((res: any) => {
       this.users.set(res);
     });
   }
@@ -87,6 +100,30 @@ export class TasksComponent implements OnInit, OnChanges {
     ) {
       this.organizeTasksByColumn();
     }
+  }
+  
+  ngAfterViewInit() {
+    this.columnScrollContainers.forEach((container, index) => {
+      const column = this.columns[index];
+      if (!column) {
+        return;
+      }
+      fromEvent(container.nativeElement, 'scroll')
+      .pipe(
+        throttleTime(500),
+        takeUntil(this.destroy$),
+      )
+      .subscribe(() => {
+        this.onColumnScroll(column.title);
+      });
+    });
+  }
+  onColumnScroll(columnTitle: string) {
+    console.log(`${columnTitle} column scrolling`);
+  }
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   organizeTasksByColumn() {
@@ -108,8 +145,7 @@ export class TasksComponent implements OnInit, OnChanges {
 
     const matchesSearch =
       !normalizedSearch ||
-      taskTitle.includes(normalizedSearch) ||
-      taskDescription.includes(normalizedSearch);
+      taskTitle.includes(normalizedSearch);
 
     const matchesPriority = !normalizedPriority || taskPriority === normalizedPriority;
 

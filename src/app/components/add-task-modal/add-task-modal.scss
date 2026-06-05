@@ -1,34 +1,42 @@
 .modal-overlay{
     position: fixed;
     inset: 0;
+    width: 100%;
+    height: 100%;
     background: rgba(0,0,0,0.7);
-    border-radius: 24px;
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 1000;
     backdrop-filter: blur(25px);
     animation: fadeIn 0.2s ease;
+    padding: 16px;
+    overflow: hidden;
+    overscroll-behavior: contain;
+    touch-action: none;
 }
 
 .modal-container{
     width: 650px;
+    max-width: 100%;
+    max-height: calc(100dvh - 32px);
     background: rgba(255,255,255,0.1);
     border: 1px solid rgba(255,255,255,0.08);
     backdrop-filter: blur(14px);
     border-radius: 24px;
     padding: 24px;
-    margin: 10px;
     color: white;
     box-shadow:0 8px 32px rgba(0,0,0,0.4);
     animation: modalPop 0.25s ease;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
 }
 
 .modal-header{
     display: flex;
     justify-content: space-between;
     align-items: center;
-
     margin-bottom: 20px;
 }
 
@@ -46,7 +54,18 @@
 .modal-body{
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 12px;
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-left: 4px;
+}
+
+.modal-body form{
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
 }
 
 .modal-body input,
@@ -82,10 +101,8 @@ select option {
 .modal-footer{
     display: flex;
     justify-content: flex-end;
-
     gap: 12px;
-
-    // margin-top: 14px;
+    flex-wrap: wrap;
 }
 
 .cancel-btn{
@@ -190,4 +207,112 @@ label{
 
 .low-weight{
     font-weight: 500;
+}
+
+@media screen and (max-width: 1024px) {
+    .modal-container {
+        width: 85%;
+    }
+}
+
+@media screen and (max-width: 599px) {
+    .modal-overlay {
+        align-items: flex-start;
+        padding: 8px;
+        overflow: hidden;
+    }
+
+    .modal-container {
+        width: 94%;
+        max-height: calc(100dvh - 16px);
+        padding: 14px;
+        border-radius: 18px;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+
+    .modal-header {
+        flex-shrink: 0;
+        margin-bottom: 8px;
+
+        h2 {
+            font-size: 20px;
+            line-height: 1.2;
+        }
+    }
+
+    .modal-body {
+        flex: 1;
+        min-height: 0;
+        overflow-y: auto;
+        overflow-x: hidden;
+        padding-right: 4px;
+    }
+
+    .modal-body form {
+        gap: 4px;
+    }
+
+    .modal-body input,
+    .modal-body textarea,
+    .modal-body select {
+        min-height: 40px;
+        padding: 9px 12px;
+        font-size: 14px;
+        border-radius: 14px;
+    }
+
+    label {
+        font-size: 13px;
+        margin-left: 4px;
+        margin-bottom: 2px;
+    }
+
+
+    .modal-footer {
+        flex-shrink: 0;
+        flex-direction: column;
+        gap: 8px;
+        margin-top: 8px;
+    }
+
+    .cancel-btn,
+    .delete-btn,
+    .create-btn {
+        width: 100%;
+        min-height: 40px;
+        padding: 9px 14px;
+    }
+
+    .confirm-modal {
+        width: 95%;
+        max-width: 350px;
+    }
+
+    .buttons {
+        flex-direction: column;
+    }
+
+    .buttons button {
+        width: 100%;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .modal-container {
+        width: 96%;
+        height: auto;
+        max-height: calc(100dvh - 12px);
+        padding: 12px;
+    }
+
+    .modal-header h2 {
+        font-size: 19px;
+    }
+
+    label {
+        margin-left: 4px;
+        font-size: 13px;
+    }
 }
