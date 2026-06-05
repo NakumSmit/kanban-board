@@ -23,7 +23,7 @@ body {
   // Default the application to a light color theme. This can be changed to
   // `dark` to enable the dark color theme, or to `light dark` to defer to the
   // user's system settings.
-  color-scheme: light;
+  color-scheme: dark;
 
   // Set a default background, font and text colors for the application using
   // Angular Material's system-level CSS variables. Learn more about these
@@ -34,15 +34,24 @@ body {
 
   // Reset the user agent margin.
   margin: 0;
-  height: 100%;
-  overflow: hidden;
+  min-height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
   font-size: medium;
 }
 
-@media screen and (max-width: 768px) {
-  html, body {
+html,
+body{
+  width: 100%;
+}
+
+@media screen and (max-width: 1024px) {
+  html,
+  body {
     height: auto;
-    overflow: auto;
+    min-height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
   }
 }
 /* You can add global styles to this file, and also import other style files */
