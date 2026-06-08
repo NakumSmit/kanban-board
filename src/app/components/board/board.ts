@@ -2,6 +2,7 @@ import { ChangeDetectorRef, Component, NgZone, OnDestroy, OnInit } from '@angula
 import { TasksComponent } from '../tasks/tasks';
 import { AddTaskModalComponent } from '../add-task-modal/add-task-modal';
 import { Tasks } from '../../models/tasks';
+import { ApiTasksService } from '../../services/api-tasks/api-tasks.service';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map, takeUntil } from 'rxjs/operators';
 import { BoardLoaderComponent } from '../board-loader/board-loader.component';
@@ -28,7 +29,11 @@ export class BoardComponent implements OnInit, OnDestroy {
   private searchSubject = new Subject<string>();
   private latestSearchTerm = '';
   private destroy$ = new Subject<void>();
-  constructor(private ngZone: NgZone, private cdr: ChangeDetectorRef) {}
+  constructor(
+    private ngZone: NgZone,
+    private cdr: ChangeDetectorRef,
+    private apiTaskService: ApiTasksService,
+  ) {}
 
   ngOnInit() {
     this.startBoardLoading();
@@ -68,6 +73,17 @@ export class BoardComponent implements OnInit, OnDestroy {
       this.tasks = JSON.parse(tasks);
     }
     this.filteredTasks = [...this.tasks];
+
+    this.apiTaskService.getBoardTasks().subscribe({
+      next: (apiTasks) => {
+        this.tasks = apiTasks;
+        this.filteredTasks = [...apiTasks];
+        localStorage.setItem('tasks', JSON.stringify(apiTasks));
+      },
+      error: (error) => {
+        console.error('Failed to load tasks from API', error);
+      },
+    });
   }
 
   onSearchInput(event: Event) {

@@ -1,7 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ApiTasks } from '../../models/tasks';
+import { map } from 'rxjs/operators';
+import { ApiTasks, Tasks } from '../../models/tasks';
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +14,26 @@ export class ApiTasksService {
   constructor(private http: HttpClient) {}
 
   getTasks(): Observable<ApiTasks[]> {
-    return this.http.get<ApiTasks[]>(this.apiUrl); 
+    return this.http
+      .get<{ tasks: ApiTasks[] }>(this.apiUrl)
+      .pipe(map((response) => response.tasks));
+  }
+
+  getBoardTasks(): Observable<Tasks[]> {
+    return this.http.get<{ tasks: ApiTasks[] }>(this.apiUrl).pipe(
+      map((response) => response.tasks.map((task) => this.mapApiTaskToTask(task)))
+    );
+  }
+
+  private mapApiTaskToTask(apiTask: ApiTasks): Tasks {
+    return {
+      taskId: apiTask.id,
+      title: apiTask.title,
+      description: apiTask.description,
+      priority: apiTask.priority,
+      dueDate: new Date(apiTask.date),
+      assignedUser: apiTask.user,
+      status: apiTask.status,
+    };
   }
 }
