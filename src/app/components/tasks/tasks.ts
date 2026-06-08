@@ -14,8 +14,9 @@ import {
   ElementRef,
 } from '@angular/core';
 import { DatePipe, TitleCasePipe, NgClass } from '@angular/common';
-import { Userdata } from '../../services/userdata/userdata';
+import { ApiTasksService } from '../../services/api-tasks/api-tasks.service';
 import { Tasks } from '../../models/tasks';
+import { ApiTasks } from '../../models/tasks';
 import {
   DragDropModule,
   CdkDragDrop,
@@ -41,7 +42,7 @@ interface KanbanColumn {
   styleUrls: ['./tasks.scss', '../../app.scss'],
 })
 export class TasksComponent implements OnInit, OnChanges, AfterViewInit, OnDestroy {
-  constructor(private userdata: Userdata) {}
+  constructor(private apiTaskService: ApiTasksService) {}
 
   @ViewChildren('columnScrollContainer')
   columnScrollContainers!: QueryList<ElementRef<HTMLElement>>;
@@ -53,7 +54,7 @@ export class TasksComponent implements OnInit, OnChanges, AfterViewInit, OnDestr
   @Input() searchTerm: string = '';
   @Input() selectedPriority: string = '';
   @Input() selectedAssignee: string = '';
-  users = signal<any[]>([]);
+  users: ApiTasks[] = [] ;
   connectedDropLists: taskStatus[] = ['todo', 'in-progress', 'review', 'done'];
 
   columns: KanbanColumn[] = [
@@ -84,10 +85,10 @@ export class TasksComponent implements OnInit, OnChanges, AfterViewInit, OnDestr
   ];
   
   ngOnInit() {
-    this.userdata.getUserData()
+    this.apiTaskService.getTasks()
     .pipe(takeUntil(this.destroy$))
     .subscribe((res: any) => {
-      this.users.set(res);
+      this.users = res;
     });
   }
 
