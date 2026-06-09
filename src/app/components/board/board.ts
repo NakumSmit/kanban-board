@@ -68,20 +68,33 @@ export class BoardComponent implements OnInit, OnDestroy {
   }
 
   fetchTasks() {
-    const tasks = localStorage.getItem('tasks');
-    if (tasks) {
-      this.tasks = JSON.parse(tasks);
-    }
-    this.filteredTasks = [...this.tasks];
+    // Manual/local tasks (already stored by add/edit/delete/update/drop logic)
+    const localRaw = localStorage.getItem('tasks');
+    const localTasks: Tasks[] = localRaw ? JSON.parse(localRaw) : [];
 
     this.apiTaskService.getBoardTasks().subscribe({
       next: (apiTasks) => {
-        this.tasks = apiTasks;
-        this.filteredTasks = [...apiTasks];
-        localStorage.setItem('tasks', JSON.stringify(apiTasks));
+        // Merge API + local without duplicates (by taskId)
+        const seen = new Set<string>();
+        const merged: Tasks[] = [];
+
+        for (const t of [...apiTasks, ...localTasks]) {
+          const id = String(t.taskId);
+          if (seen.has(id)) continue;
+          seen.add(id);
+          merged.push(t);
+        }
+
+        this.tasks = merged;
+        this.applyFilters();
+        this.cdr.detectChanges();
       },
       error: (error) => {
+        // If API fails, still show local tasks
         console.error('Failed to load tasks from API', error);
+        this.tasks = localTasks;
+        this.applyFilters();
+        this.cdr.detectChanges();
       },
     });
   }
