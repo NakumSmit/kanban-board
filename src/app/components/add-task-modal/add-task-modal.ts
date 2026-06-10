@@ -26,7 +26,7 @@ export class AddTaskModalComponent {
   @Output() closeModal = new EventEmitter<void>();
   @Output() taskCreated = new EventEmitter<Tasks>();
   @Output() taskUpdated = new EventEmitter<Tasks>();
-  @Output() taskDeleted = new EventEmitter<string>();
+  @Output() taskDeleted = new EventEmitter<number>();
 
   ngOnInit() {
     if (this.selectedTask) {
@@ -69,13 +69,6 @@ export class AddTaskModalComponent {
     this.closeModal.emit();
   }
 
-  private generateTaskId(): string {
-    const date = new Date().getTime();
-    const random = Math.random();
-    const id = `TASK-${date.toString(16).toUpperCase()}-${random.toString(16).slice(2).toUpperCase()}`;
-    return id;
-  }
-
   get title() {
     return this.taskForm.get('title');
   }
@@ -98,7 +91,6 @@ export class AddTaskModalComponent {
   addTask() {
     if (this.taskForm.valid) {
       const newTask: Tasks = {
-        taskId: this.generateTaskId(),
         title: this.taskForm.value.title!,
         description: this.taskForm.value.description!,
         priority: this.taskForm.value.priority! as 'high' | 'medium' | 'low',
@@ -113,8 +105,8 @@ export class AddTaskModalComponent {
       this.taskForm.markAllAsTouched();
     }
   }
-  deleteTask(taskId: string) {
-    this.taskDeleted.emit(taskId);
+  deleteTask(id: number) {
+    this.taskDeleted.emit(id);
     this.close();
   }
 
@@ -122,7 +114,10 @@ export class AddTaskModalComponent {
 
 confirmDelete() {
 
-  this.taskDeleted.emit(this.selectedTask!.taskId);
+  if(!this.selectedTask?.id){
+    return;
+  }
+  this.taskDeleted.emit(this.selectedTask.id);
 
   this.showDeleteConfirm = false;
   
@@ -137,7 +132,7 @@ confirmDelete() {
   updateTask() {
     if (this.taskForm.valid && this.selectedTask) {
       const updatedTask: Tasks = {
-        taskId: this.selectedTask.taskId,
+        id: this.selectedTask.id,
         title: this.taskForm.value.title!,
         description: this.taskForm.value.description!,
         priority: this.taskForm.value.priority! as 'high' | 'medium' | 'low',

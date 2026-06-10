@@ -1,0 +1,139 @@
+{
+  "tasks": [
+    {
+      "title": "Buy groceries",
+      "description": "Purchase vegetables, milk, bread, rice, and cooking oil from the supermarket.",
+      "priority": "medium",
+      "dueDate": "2026-06-10T00:00:00.000Z",
+      "assignedUser": "Aarav Mehta",
+      "status": "todo",
+      "id": 1
+    },
+    {
+      "title": "Prepare monthly budget",
+      "description": "Calculate expenses, savings, rent, bills, and emergency fund for this month.",
+      "priority": "high",
+      "dueDate": "2026-06-11T00:00:00.000Z",
+      "assignedUser": "Priya Sharma",
+      "status": "in-progress",
+      "id": 2
+    },
+    {
+      "title": "Clean storage room",
+      "description": "Organize old boxes, remove unused items, and label important documents.",
+      "priority": "low",
+      "dueDate": "2026-06-14T00:00:00.000Z",
+      "assignedUser": "Rohan Patel",
+      "status": "todo",
+      "id": 3
+    },
+    {
+      "title": "Book doctor appointment",
+      "description": "Schedule a routine health checkup appointment for next week.",
+      "priority": "high",
+      "dueDate": "2026-06-09T00:00:00.000Z",
+      "assignedUser": "Neha Verma",
+      "status": "review",
+      "id": 4
+    },
+    {
+      "title": "Plan weekend trip",
+      "description": "Select destination, compare hotel prices, check transport options, and prepare itinerary.",
+      "priority": "medium",
+      "dueDate": "2026-06-13T00:00:00.000Z",
+      "assignedUser": "Karan Shah",
+      "status": "in-progress",
+      "id": 5
+    },
+    {
+      "title": "Pay electricity bill",
+      "description": "Check current bill amount and complete online payment before the due dueDate.",
+      "priority": "high",
+      "dueDate": "2026-06-08T00:00:00.000Z",
+      "assignedUser": "Aarav Mehta",
+      "status": "done",
+      "id": 6
+    },
+    {
+      "title": "Organize birthday party",
+      "description": "Prepare guest list, order cake, decorate room, and arrange snacks.",
+      "priority": "medium",
+      "dueDate": "2026-06-18T00:00:00.000Z",
+      "assignedUser": "Priya Sharma",
+      "status": "todo",
+      "id": 7
+    },
+    {
+      "title": "Service bike",
+      "description": "Take the bike to the garage for oil change, brake check, and general servicing.",
+      "priority": "medium",
+      "dueDate": "2026-06-12T00:00:00.000Z",
+      "assignedUser": "Rohan Patel",
+      "status": "review",
+      "id": 8
+    },
+    {
+      "title": "Read finance book",
+      "description": "Complete three chapters of the personal finance book and note key points.",
+      "priority": "low",
+      "dueDate": "2026-06-20T00:00:00.000Z",
+      "assignedUser": "Neha Verma",
+      "status": "in-progress",
+      "id": 9
+    },
+    {
+      "title": "Arrange documents",
+      "description": "Sort entity proofs, bank papers, certificates, and insurance documents into folders.",
+      "priority": "high",
+      "dueDate": "2026-06-16T00:00:00.000Z",
+      "assignedUser": "Karan Shah",
+      "status": "done",
+      "id": 10
+    },
+    {
+      "title": "Renew gym membership",
+      "description": "Visit the gym office, check available plans, and renew the membership for the next three months.",
+      "priority": "medium",
+      "dueDate": "2026-06-21T00:00:00.000Z",
+      "assignedUser": "Aarav Mehta",
+      "status": "todo",
+      "id": 11
+    },
+    {
+      "title": "Water balcony plants",
+      "description": "Water all balcony plants, remove dry leaves, and add fertilizer to the rose plant.",
+      "priority": "low",
+      "dueDate": "2026-06-09T00:00:00.000Z",
+      "assignedUser": "Priya Sharma",
+      "status": "done",
+      "id": 12
+    },
+    {
+      "title": "Prepare travel checklist",
+      "description": "Create a checklist for clothes, documents, charger, medicines, wallet, and travel tickets.",
+      "priority": "medium",
+      "dueDate": "2026-06-17T00:00:00.000Z",
+      "assignedUser": "Karan Shah",
+      "status": "in-progress",
+      "id": 13
+    },
+    {
+      "title": "Repair kitchen tap",
+      "description": "Call the plumber, explain the leakage issue, and get the kitchen tap repaired.",
+      "priority": "high",
+      "dueDate": "2026-06-10T00:00:00.000Z",
+      "assignedUser": "Rohan Patel",
+      "status": "todo",
+      "id": 14
+    },
+    {
+      "title": "Organize study notes",
+      "description": "Sort handwritten notes by subject, remove duplicate pages, and create separate folders.",
+      "priority": "medium",
+      "dueDate": "2026-06-19T00:00:00.000Z",
+      "assignedUser": "Neha Verma",
+      "status": "review",
+      "id": 15
+    }
+  ]
+}

@@ -16,7 +16,7 @@
       [cdkDropListData]="column.tasks"
       [cdkDropListConnectedTo]="connectedDropLists"
       (cdkDropListDropped)="drop($event, column.status)">
-        @for (task of column.tasks; track task.taskId) {
+        @for (task of column.tasks; track task.id) {
           <div 
           class="task-item" 
           (click)="editViewTask(task)" 

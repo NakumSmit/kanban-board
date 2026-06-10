@@ -1,5 +1,5 @@
 export interface Tasks {
-    taskId: any,
+    id?: number,
     title: string,
     description: string,
     priority: "high" | "medium" | "low",

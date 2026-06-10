@@ -1,8 +1,6 @@
 import {
   Component,
   Input,
-  signal,
-  OnInit,
   OnChanges,
   SimpleChanges,
   Output,
@@ -14,9 +12,7 @@ import {
   ElementRef,
 } from '@angular/core';
 import { DatePipe, TitleCasePipe, NgClass } from '@angular/common';
-import { ApiTasksService } from '../../services/api-tasks/api-tasks.service';
 import { Tasks } from '../../models/tasks';
-import { ApiTasks } from '../../models/tasks';
 import {
   DragDropModule,
   CdkDragDrop,
@@ -41,8 +37,7 @@ interface KanbanColumn {
   templateUrl: './tasks.html',
   styleUrls: ['./tasks.scss', '../../app.scss'],
 })
-export class TasksComponent implements OnInit, OnChanges, AfterViewInit, OnDestroy {
-  constructor(private apiTaskService: ApiTasksService) {}
+export class TasksComponent implements OnChanges, AfterViewInit, OnDestroy {
 
   @ViewChildren('columnScrollContainer')
   columnScrollContainers!: QueryList<ElementRef<HTMLElement>>;
@@ -54,7 +49,6 @@ export class TasksComponent implements OnInit, OnChanges, AfterViewInit, OnDestr
   @Input() searchTerm: string = '';
   @Input() selectedPriority: string = '';
   @Input() selectedAssignee: string = '';
-  users: ApiTasks[] = [] ;
   connectedDropLists: taskStatus[] = ['todo', 'in-progress', 'review', 'done'];
 
   columns: KanbanColumn[] = [
@@ -83,14 +77,6 @@ export class TasksComponent implements OnInit, OnChanges, AfterViewInit, OnDestr
       tasks: [],
     },
   ];
-  
-  ngOnInit() {
-    this.apiTaskService.getTasks()
-    .pipe(takeUntil(this.destroy$))
-    .subscribe((res: any) => {
-      this.users = res;
-    });
-  }
 
   ngOnChanges(changes: SimpleChanges) {
     if (
@@ -178,7 +164,7 @@ export class TasksComponent implements OnInit, OnChanges, AfterViewInit, OnDestr
     }
 
     const movedTaskIndexInColumn = event.container.data.findIndex(
-      (task) => task.taskId === movedTask.taskId,
+      (task) => task.id === movedTask.id,
     );
 
     if (movedTaskIndexInColumn !== -1) {
@@ -195,12 +181,12 @@ export class TasksComponent implements OnInit, OnChanges, AfterViewInit, OnDestr
       })),
     );
 
-    const visibleTaskIds = new Set(updatedVisibleTasks.map((task) => String(task.taskId)));
+    const visibleTaskIds = new Set(updatedVisibleTasks.map((task) => String(task.id)));
 
     const visibleQueue = [...updatedVisibleTasks];
 
     const updatedAllTasks = this.tasks.map((task) => {
-      if (visibleTaskIds.has(String(task.taskId))) {
+      if (visibleTaskIds.has(String(task.id))) {
         return visibleQueue.shift()!;
       }
 

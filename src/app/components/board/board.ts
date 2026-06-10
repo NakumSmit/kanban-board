@@ -68,31 +68,16 @@ export class BoardComponent implements OnInit, OnDestroy {
   }
 
   fetchTasks() {
-    // Manual/local tasks (already stored by add/edit/delete/update/drop logic)
-    const localRaw = localStorage.getItem('tasks');
-    const localTasks: Tasks[] = localRaw ? JSON.parse(localRaw) : [];
 
     this.apiTaskService.getBoardTasks().subscribe({
-      next: (apiTasks) => {
-        // Merge API + local without duplicates (by taskId)
-        const seen = new Set<string>();
-        const merged: Tasks[] = [];
-
-        for (const t of [...apiTasks, ...localTasks]) {
-          const id = String(t.taskId);
-          if (seen.has(id)) continue;
-          seen.add(id);
-          merged.push(t);
-        }
-
-        this.tasks = merged;
+      next: (tasks) => {
+        this.tasks = tasks;
         this.applyFilters();
         this.cdr.detectChanges();
       },
       error: (error) => {
-        // If API fails, still show local tasks
         console.error('Failed to load tasks from API', error);
-        this.tasks = localTasks;
+        this.tasks = [];
         this.applyFilters();
         this.cdr.detectChanges();
       },
@@ -121,26 +106,39 @@ export class BoardComponent implements OnInit, OnDestroy {
   }
 
   addNewTask(task: Tasks) {
-    this.tasks = [...this.tasks, task];
-    localStorage.setItem('tasks', JSON.stringify(this.tasks));
-    this.applyFilters();
-    // this.applySearch(this.latestSearchTerm);
+    this.apiTaskService.addTask(task).subscribe({
+      next: () => {
+        this.fetchTasks();
+      },
+      error: (error) =>{
+        console.log('Failed to add task', error);
+      },
+    });
   }
 
   updateTask(updatedTask: Tasks) {
-    this.tasks = this.tasks.map(task => task.taskId === updatedTask.taskId ? updatedTask : task);
-    localStorage.setItem('tasks', JSON.stringify(this.tasks));
-    // this.applySearch(this.latestSearchTerm);
-    this.applyFilters();
-    this.closeTaskModal();
+    this.apiTaskService.updateTask(updatedTask).subscribe({
+      next: () => {
+        this.fetchTasks();
+        this.closeTaskModal();
+      },
+      error: (error) => {
+        console.log('failed to update task', error);
+      },
+    });
   }
 
-  deleteTask(taskId: string) {
-    this.tasks = this.tasks.filter(task => task.taskId !== taskId);
-    localStorage.setItem('tasks', JSON.stringify(this.tasks));
-    this.selectedPriority = '';
-    this.selectedAssignee = '';
-    this.applyFilters();
+  deleteTask(id: number) {
+    this.apiTaskService.deleteTask(id).subscribe({
+      next: () => {
+        this.selectedPriority = '';
+        this.selectedAssignee = '';
+        this.fetchTasks();
+      },
+      error: (error) => {
+        console.log('Failed to delete task', error);
+      },
+    });
   }
 
   openAddTaskModal() {
@@ -208,7 +206,16 @@ export class BoardComponent implements OnInit, OnDestroy {
   }
   updateTaskStatusAfterDrop(updatedTask: Tasks[]) {
     this.tasks = updatedTask;
-    localStorage.setItem('tasks', JSON.stringify(this.tasks));
     this.applyFilters();
+    updatedTask.forEach(task => {
+      if(!task.id){
+        return;
+      }
+      this.apiTaskService.updateTask(task).subscribe({
+        error: (error) => {
+          console.log('Failed to update dropped task', error);
+        },
+      });
+    });
   }
 }
