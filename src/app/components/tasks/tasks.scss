@@ -325,10 +325,23 @@
 }
 
 @media screen and (min-width: 1025px) {
+    /*
+      At 100% browser zoom, visually match the previous "80% zoom" layout.
+      We keep proportional downscaling but avoid incorrect size math that can
+      cause horizontal overflow and/or break internal scroll.
+    */
+    :host {
+        --kanban-ui-scale: 0.8;
+        --kanban-ui-inverse: 1.25;
+    }
+
     .main-task-container {
-        height: 100%;
+        height: calc(100% * var(--kanban-ui-inverse));
         min-height: 0;
         overflow: hidden;
+        width: calc(100% * var(--kanban-ui-inverse));
+        transform: scale(var(--kanban-ui-scale));
+        transform-origin: top left;
     }
 
     .task-column {

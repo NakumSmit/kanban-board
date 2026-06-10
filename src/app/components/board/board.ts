@@ -2,6 +2,7 @@ import { ChangeDetectorRef, Component, NgZone, OnDestroy, OnInit } from '@angula
 import { TasksComponent } from '../tasks/tasks';
 import { AddTaskModalComponent } from '../add-task-modal/add-task-modal';
 import { Tasks } from '../../models/tasks';
+import { ApiTasksService } from '../../services/api-tasks/api-tasks.service';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map, takeUntil } from 'rxjs/operators';
 import { BoardLoaderComponent } from '../board-loader/board-loader.component';
@@ -28,7 +29,11 @@ export class BoardComponent implements OnInit, OnDestroy {
   private searchSubject = new Subject<string>();
   private latestSearchTerm = '';
   private destroy$ = new Subject<void>();
-  constructor(private ngZone: NgZone, private cdr: ChangeDetectorRef) {}
+  constructor(
+    private ngZone: NgZone,
+    private cdr: ChangeDetectorRef,
+    private apiTaskService: ApiTasksService,
+  ) {}
 
   ngOnInit() {
     this.startBoardLoading();
@@ -63,11 +68,35 @@ export class BoardComponent implements OnInit, OnDestroy {
   }
 
   fetchTasks() {
-    const tasks = localStorage.getItem('tasks');
-    if (tasks) {
-      this.tasks = JSON.parse(tasks);
-    }
-    this.filteredTasks = [...this.tasks];
+    // Manual/local tasks (already stored by add/edit/delete/update/drop logic)
+    const localRaw = localStorage.getItem('tasks');
+    const localTasks: Tasks[] = localRaw ? JSON.parse(localRaw) : [];
+
+    this.apiTaskService.getBoardTasks().subscribe({
+      next: (apiTasks) => {
+        // Merge API + local without duplicates (by taskId)
+        const seen = new Set<string>();
+        const merged: Tasks[] = [];
+
+        for (const t of [...apiTasks, ...localTasks]) {
+          const id = String(t.taskId);
+          if (seen.has(id)) continue;
+          seen.add(id);
+          merged.push(t);
+        }
+
+        this.tasks = merged;
+        this.applyFilters();
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        // If API fails, still show local tasks
+        console.error('Failed to load tasks from API', error);
+        this.tasks = localTasks;
+        this.applyFilters();
+        this.cdr.detectChanges();
+      },
+    });
   }
 
   onSearchInput(event: Event) {
