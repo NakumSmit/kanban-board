@@ -18,6 +18,7 @@ export class LoginComponent {
   private authService = inject(AuthService);
 
   user: any;
+  loginError ='';
   loginForm = this.fb.nonNullable.group({
     username: ['', [Validators.required, Validators.minLength(4)]],
     email: ['', [Validators.required, Validators.email]],
@@ -42,9 +43,12 @@ export class LoginComponent {
       const password = this.loginForm.value.password ?? '';
       const success = this.authService.login(email, password);
       if(success){
-      localStorage.setItem('user', JSON.stringify(this.loginForm.value));
+      this.loginError = '';
       this.loginForm.reset();
       this.router.navigate(['/dashboard']);
+      } else {
+        this.loginError = 
+        'Invalid email or password. Please try again.';
       }
     } else {
       this.loginForm.markAllAsTouched();

@@ -1,14 +1,33 @@
 import { Injectable } from '@angular/core';
 
+interface User {
+  email: string;
+  password: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private readonly loginKey = 'isLoggedIn';
+
+  private allowedUsers: User[] = [
+    {
+      email: 'admin@gmail.com',
+      password: 'admin@123',
+    },
+    {
+      email: 'smitnakum9@gmail.com',
+      password: 'Smit#789',
+    }
+  ];
   
   login(email: string, password: string): boolean {
-    if(email && password){
-      localStorage.setItem(this.loginKey, 'true');
+    const userExits = this.allowedUsers.some(user => 
+      user.email === email && user.password === password
+    );
+    if(userExits) {
+      localStorage.setItem('isLoggedIn', 'true');
+      localStorage.setItem('userEmail', email);
       return true;
     }
 
@@ -16,10 +35,11 @@ export class AuthService {
   }
 
   logout(): void{
-    localStorage.removeItem(this.loginKey);
+    localStorage.removeItem('isLoggedIn');
+    localStorage.removeItem('userEmail');
   }
 
   isLoggedIn(): boolean{
-    return localStorage.getItem(this.loginKey) === 'true';
+    return localStorage.getItem('isLoggedIn') === 'true';  
   }
 }

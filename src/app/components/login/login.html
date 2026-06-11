@@ -58,6 +58,12 @@
         }
       </div>
       
+      @if(loginError){
+        <div class="login-error">
+          {{ loginError }}
+        </div>
+      }
+
       <button type="submit" class="login-btn">LOGIN</button>
     </form>
   </div>
