@@ -1,9 +1,15 @@
 <div class="modal-overlay" (click)="close()">
     <div class="modal-container" (click)="$event.stopPropagation()">
         <div class="modal-header">
-            <h2>{{mode === "create" ? "Create Task" : mode === "edit" ? "Edit Task" : "View Task"}}</h2>
-            <button class="close-btn" (click)="close()"> ✕ </button>
-        </div>
+            <div class="header-content">
+                <h2>{{mode === "create" ? "Create Task" : mode === "edit" ? "Edit Task" : "View Task Details"}}
+                    @if(mode === 'view'){
+                    <span class="view-only-badge">VIEW ONLY</span>
+                    }
+                </h2>
+                </div>
+                <button class="close-btn" (click)="close()">✕</button>
+            </div>
         <div class="modal-body">
 
             <form [formGroup]="taskForm" (ngSubmit)="mode === 'create' ? addTask() : mode === 'edit' ? updateTask() : gotoEditMode()">
@@ -78,20 +84,17 @@
                 </div>
 
                 <label for="assignedUser">Assigned User:</label>
-                <input type="text" 
-                [placeholder]="
-                mode === 'create'
-                ? 'Enter Assigned User'
-                : mode === 'edit'
-                ? 'Edit Assigned User'
-                : 'View Assigned User'" 
-                formControlName="assignedUser">
+                <select formControlName="assignedUser">
+                    <option value="" disabled>Select Assignee</option>
+                    <option value="Aarav Mehta">Aarav Mehta</option>
+                    <option value="Karan Shah">Karan Shah</option>
+                    <option value="Neha Verma">Neha Verma</option>
+                    <option value="Priya Sharma">Priya Sharma</option>
+                    <option value="Rohan Patel">Rohan Patel</option>
+                </select>
                 <div class="error-container">
                     @if(assignedUser?.touched && assignedUser?.hasError('required')){
                     <p class="error-text">Assigned user is required</p>
-                    }
-                    @else if(assignedUser?.touched && assignedUser?.hasError('pattern')){
-                    <p class="error-text">Please enter a valid user name.</p>
                     }
                 </div>
 

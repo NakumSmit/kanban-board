@@ -315,4 +315,22 @@ label{
         margin-left: 4px;
         font-size: 13px;
     }
+
+    .header-content{
+        display: grid;
+        grid-template-columns:max-content;
+    }
+}
+
+.view-only-badge {
+    margin: 0 15px;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 13px;
+    letter-spacing: 1px;
+    font-weight: 700;
+    background: rgba(244, 63, 94, 0.15);
+    border: 1px solid rgba(244, 63, 94, 0.35);
+    color: rgb(244, 63, 94);
+    align-self:flex-start;
 }

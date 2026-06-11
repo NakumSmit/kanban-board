@@ -61,7 +61,7 @@ export class AddTaskModalComponent {
     ]),
     priority: new FormControl('', Validators.required),
     dueDate: new FormControl('', Validators.required),
-    assignedUser: new FormControl('', [Validators.required, Validators.pattern('[a-zA-Z].*')]),
+    assignedUser: new FormControl('', Validators.required),
     status: new FormControl('', Validators.required),
   });
 
