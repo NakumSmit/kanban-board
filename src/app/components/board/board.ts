@@ -64,7 +64,7 @@ export class BoardComponent implements OnInit, OnDestroy {
       this.fetchTasks();
       this.isLoading = false;
       this.cdr.detectChanges();
-    }, 5000);
+    }, 999);
   }
 
   fetchTasks() {

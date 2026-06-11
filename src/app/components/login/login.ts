@@ -41,9 +41,10 @@ export class LoginComponent {
     if (this.loginForm.valid) {
       const email = this.loginForm.value.email ?? '';
       const password = this.loginForm.value.password ?? '';
+      const userNameValue = this.loginForm.value.username ?? '';
       const success = this.authService.login(email, password);
       if(success){
-      this.loginError = '';
+      localStorage.setItem('username', userNameValue);
       this.loginForm.reset();
       this.router.navigate(['/dashboard']);
       } else {
