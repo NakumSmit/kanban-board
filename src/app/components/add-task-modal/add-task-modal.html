@@ -74,11 +74,13 @@
 
                     <div class="duedate-container">
                         <label for="dueDate">Due Date * :</label>
-                        <input type="date" placeholder="Due Date" formControlName="dueDate">
+                        <input type="date" placeholder="Due Date" formControlName="dueDate" [min]="todayDate">
                         <div class="error-container">
                             @if(dueDate?.touched && dueDate?.hasError('required')){
-                            <p class="error-text">Due date is required</p>
-                            }
+                                <p class="error-text">Due date is required</p>
+                            } @else if(dueDate?.touched && dueDate?.hasError('pastDate')){
+                                <p class="error-text">Due date cannot be before today.</p>
+                            } 
                         </div>
                     </div>
                 </div>

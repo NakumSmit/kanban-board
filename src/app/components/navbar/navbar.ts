@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth/auth.service';
+import { JsonPipe } from '@angular/common';
 @Component({
   selector: 'app-navbar',
   imports: [],
@@ -9,7 +10,9 @@ import { AuthService } from '../../services/auth/auth.service';
 })
 export class NavbarComponent {
 
-  username = localStorage.getItem('username') ?? 'User';
+  loggedInUser = JSON.parse(localStorage.getItem('loggedInUser') || '{}');
+  username = this.loggedInUser.username ?? 'User';
+  role = this.loggedInUser.role ?? 'user';
 
   constructor(
     private authService: AuthService,
@@ -17,7 +20,6 @@ export class NavbarComponent {
   ) {}
 
   logout() {
-    localStorage.removeItem('username');
     this.authService.logout();
     this.router.navigate(['/login']);
   }

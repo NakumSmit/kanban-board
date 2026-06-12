@@ -9,27 +9,12 @@
     <p class="subtitle">Sign in to continue to KANBAN BOARD</p>
 
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-
-      <div class="input-group">
-        <span class="icon">
-          <img src="assets/icons/user.svg" alt="" width="18px" height="18px"/>
-        </span>
-        <input type="text" id="username" formControlName="username" placeholder="Name" />
-      </div>
-      <div class="error-container">
-        @if (username?.touched && username?.hasError('required')) {
-          <p class="error-text">Username is required.</p>
-        }
-        @if (username?.touched && username?.hasError('minlength')) {
-          <p class="error-text">Username must be at least 4 characters long.</p>
-        }
-      </div>
-
+      
       <div class="input-group">
         <span class="icon">
           <img src="assets/icons/email.svg" alt="" width="18px" height="18px"/>
         </span>
-        <input type="email" id="email" formControlName="email" placeholder="Email ID" />
+        <input type="email" id="email" formControlName="email" placeholder="Email ID *" />
       </div>
       <div class="error-container">
         @if (email?.touched && email?.hasError('required')) {
@@ -44,8 +29,8 @@
         <span class="icon">
           <img src="assets/icons/lock.svg" alt="" width="18px" height="18px"/>
         </span>
-        <input type="password" id="password" formControlName="password" placeholder="Password" />
-        <span class="icon-right">
+        <input [type]="showPass? 'text' : 'password'" id="password" formControlName="password" placeholder="Password *" />
+        <span class="icon-right" (click)="togglePass()">
           <img src="assets/icons/visibility.svg" alt="" width="18px" height="18px"/>
         </span>
       </div>

@@ -1,4 +1,62 @@
 {
+  "users": [
+    {
+      "id": 1,
+      "username": "admin",
+      "email": "admin@gmail.com",
+      "password": "admin@123",
+      "role": "admin"
+    },
+    {
+      "id": 2,
+      "username": "HRMS",
+      "email": "hr@gmail.com",
+      "password": "hr@123",
+      "role": "hr"
+    },
+    {
+      "id": 3,
+      "username": "smit",
+      "email": "smitnakum9@gmail.com",
+      "password": "Smit#8866",
+      "role": "user"
+    },
+    {
+      "id": 4,
+      "username": "Aarav Mehta",
+      "email": "aaravmehta@gmail.com",
+      "password": "aaravmehta@123",
+      "role": "user"
+    },
+    {
+      "id": 5,
+      "username": "Karan Shah",
+      "email": "karanshah@gmail.com",
+      "password": "karanshah@123",
+      "role": "user"
+    },
+    {
+      "id": 6,
+      "username": "Neha Verma",
+      "email": "nehaverma@gmail.com",
+      "password": "nehaverma@123",
+      "role": "user"
+    },
+    {
+      "id": 7,
+      "username": "Priya Sharma",
+      "email": "priyasharma@gmail.com",
+      "password": "priyasharma@123",
+      "role": "user"
+    },
+    {
+      "id": 8,
+      "username": "Rohan Patel",
+      "email": "rohanpatel@gmail.com",
+      "password": "rohanpatel@123",
+      "role": "user"
+    }
+  ],
   "tasks": [
     {
       "title": "Buy groceries",

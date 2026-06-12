@@ -17,3 +17,11 @@ export interface ApiTasks {
     user: string,
     status: "todo" | "in-progress" | "review" | "done",
 }
+
+export interface Users {
+    id: number,
+    username: string,
+    email: string,
+    password: string,
+    role: string,
+}

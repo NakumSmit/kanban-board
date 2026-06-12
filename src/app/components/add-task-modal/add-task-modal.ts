@@ -7,6 +7,8 @@ import {
   NgForm,
   ReactiveFormsModule,
   Validators,
+  AbstractControl,
+  ValidationErrors
 } from '@angular/forms';
 import { NgClass, NgIf } from '@angular/common';
 
@@ -22,7 +24,7 @@ export class AddTaskModalComponent {
 
   @Input() mode: 'create' | 'edit' | 'view' = 'create';
   @Input() selectedTask?: Tasks;
-
+  todayDate = new Date().toISOString().split('T')[0];
   @Output() closeModal = new EventEmitter<void>();
   @Output() taskCreated = new EventEmitter<Tasks>();
   @Output() taskUpdated = new EventEmitter<Tasks>();
@@ -60,7 +62,7 @@ export class AddTaskModalComponent {
       Validators.pattern('[a-zA-Z].*'),
     ]),
     priority: new FormControl('', Validators.required),
-    dueDate: new FormControl('', Validators.required),
+    dueDate: new FormControl('', [Validators.required, this.futureDateValidator]),
     assignedUser: new FormControl('', Validators.required),
     status: new FormControl('', Validators.required),
   });
@@ -147,4 +149,20 @@ confirmDelete() {
       this.taskForm.markAllAsTouched();
     }
   }
+
+futureDateValidator(
+  control: AbstractControl
+): ValidationErrors | null {
+  
+  if (!control.value) return null;
+
+  const selectedDate = new Date(control.value);
+  const today = new Date();
+
+  today.setHours(0, 0, 0, 0);
+
+  return selectedDate < today
+    ? { pastDate: true }
+    : null;
+}
 }

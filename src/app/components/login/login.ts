@@ -19,14 +19,14 @@ export class LoginComponent {
 
   user: any;
   loginError ='';
+  showPass = false;
   loginForm = this.fb.nonNullable.group({
-    username: ['', [Validators.required, Validators.minLength(4)]],
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(6)]],
   });
 
-  get username() {
-    return this.loginForm.get('username');
+  togglePass(){
+    this.showPass = !this.showPass;
   }
 
   get email() {
@@ -41,17 +41,21 @@ export class LoginComponent {
     if (this.loginForm.valid) {
       const email = this.loginForm.value.email ?? '';
       const password = this.loginForm.value.password ?? '';
-      const userNameValue = this.loginForm.value.username ?? '';
-      const success = this.authService.login(email, password);
-      if(success){
-      localStorage.setItem('username', userNameValue);
-      this.loginForm.reset();
-      this.router.navigate(['/dashboard']);
-      } else {
-        this.loginError = 
-        'Invalid email or password. Please try again.';
-      }
-    } else {
+      this.authService.login(email, password).subscribe({
+        next: (success) => {
+          if (success) {
+            this.loginError = '';
+            this.loginForm.reset();
+            this.router.navigate(['/dashboard']);
+          } else {
+            this.loginError = 'Invalid email or password. Please try again.';
+          }
+        },
+        error: () => {
+          this.loginError = 'Something went wrong. Please try again later.';
+        }
+      });
+    } else{
       this.loginForm.markAllAsTouched();
     }
   }

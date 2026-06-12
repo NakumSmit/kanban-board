@@ -1,45 +1,56 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-
-interface User {
-  email: string;
-  password: string;
-}
+import { Observable, map } from 'rxjs';
+import { Users } from '../../models/tasks';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  private allowedUsers: User[] = [
-    {
-      email: 'admin@gmail.com',
-      password: 'admin@123',
-    },
-    {
-      email: 'smitnakum9@gmail.com',
-      password: 'Smit#789',
-    }
-  ];
+  constructor(private http: HttpClient){}
   
-  login(email: string, password: string): boolean {
-    const userExits = this.allowedUsers.some(user => 
-      user.email === email && user.password === password
-    );
-    if(userExits) {
-      localStorage.setItem('isLoggedIn', 'true');
-      localStorage.setItem('userEmail', email);
-      return true;
-    }
+  private usersUrl = 'http://localhost:3000/users';
+  
+  login(email: string, password: string): Observable<boolean>{
+    return this.http.get<Users[]>(`${this.usersUrl}?email=${email}`).pipe(
+      map(users => {
+        const foundUser =users.find(user => 
+          user.email === email && user.password === password
+        );
+        
+        if(foundUser){
+          localStorage.setItem('isLoggedIn', 'true');
 
-    return false;
+          localStorage.setItem('loggedInUser', JSON.stringify({
+            id: foundUser.id,
+            username: foundUser.username,
+            email: foundUser.email,
+            role: foundUser.role
+          }));
+          
+          return true;
+        }
+        
+        return false;
+      })
+    );
   }
 
-  logout(): void{
-    localStorage.removeItem('isLoggedIn');
-    localStorage.removeItem('userEmail');
+  getRole(): string | null {
+    return localStorage.getItem('role');
   }
 
   isLoggedIn(): boolean{
     return localStorage.getItem('isLoggedIn') === 'true';  
+  }
+
+  getLoggedInUSer(): Users | null {
+    const user = localStorage.getItem('loggedInUser');
+    return user ? JSON.parse(user): null;
+  }
+
+  logout(): void{
+    localStorage.clear();
   }
 }
