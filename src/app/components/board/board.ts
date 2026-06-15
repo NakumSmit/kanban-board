@@ -17,6 +17,8 @@ import { BoardLoaderComponent } from '../board-loader/board-loader.component';
 
 export class BoardComponent implements OnInit, OnDestroy {
 
+  loggedInUSer = JSON.parse(localStorage.getItem('loggedInUser') || '{}');
+  role: string = this.loggedInUSer.role;
   modalMode: 'create' | 'edit' | 'view' = 'create';
   selectedTask?: Tasks;
   tasks: Tasks[] = [];
@@ -145,6 +147,7 @@ export class BoardComponent implements OnInit, OnDestroy {
     this.modalMode = 'create';
     this.selectedTask = undefined;
     this.isTaskModalOpen = true;
+    this.role;
   }
 
   openEditTaskModal(task: Tasks) {
@@ -204,18 +207,33 @@ export class BoardComponent implements OnInit, OnDestroy {
       return matchesSearch && matchesPriority && matchesAssignee;
     });
   }
-  updateTaskStatusAfterDrop(updatedTask: Tasks[]) {
-    this.tasks = updatedTask;
+  updateTaskStatusAfterDrop(updatedTask: Tasks) {
+    if(!updatedTask.id){
+      return;
+    }
     this.applyFilters();
-    updatedTask.forEach(task => {
-      if(!task.id){
-        return;
-      }
-      this.apiTaskService.updateTask(task).subscribe({
-        error: (error) => {
-          console.log('Failed to update dropped task', error);
-        },
-      });
+    this.apiTaskService.updateTask(updatedTask).subscribe({
+      next: () => {
+        this.fetchTasks();
+      },
+      error: (error) => {
+        console.log('Failed to update dropped task', error);
+      },
+    });
+  }
+
+  updateTaskCompleted(updatedTask: Tasks) {
+    if (!updatedTask.id) {
+      return;
+    }
+    
+    this.apiTaskService.updateTask(updatedTask).subscribe({
+      next: () => {
+        this.fetchTasks();
+      },
+      error: (error) => {
+        console.log('Failed to update task completion', error);
+      },
     });
   }
 }

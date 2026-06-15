@@ -45,11 +45,15 @@ export class TasksComponent implements OnChanges, AfterViewInit, OnDestroy {
 
   @Input() tasks: Tasks[] = [];
   @Output() viewTask = new EventEmitter<Tasks>();
-  @Output() taskStatusChanged = new EventEmitter<Tasks[]>();
+  @Output() taskStatusChanged = new EventEmitter<Tasks>();
+  @Output() taskCompletedChanged = new EventEmitter<Tasks>();
   @Input() searchTerm: string = '';
   @Input() selectedPriority: string = '';
   @Input() selectedAssignee: string = '';
   connectedDropLists: taskStatus[] = ['todo', 'in-progress', 'review', 'done'];
+  loggedInUser = JSON.parse(localStorage.getItem('loggedInUser') || '{}');
+  role = this.loggedInUser.role || 'user';
+  permissionMessage = '';
 
   columns: KanbanColumn[] = [
     {
@@ -113,10 +117,26 @@ export class TasksComponent implements OnChanges, AfterViewInit, OnDestroy {
     this.destroy$.complete();
   }
 
+  private sortTaskByPriority(tasks: Tasks[]){
+    const priorityOrder: Record<string, number> = { 
+      high: 1,
+      medium: 2,
+      low: 3,
+    };
+
+    return [...tasks].sort((a, b) => {
+      const aPriority = a.priority?.trim().toLowerCase() || '';
+      const bPriority = b.priority?.trim().toLowerCase() || '';
+      return priorityOrder[aPriority] - priorityOrder[bPriority];
+    });
+  }
+
   organizeTasksByColumn() {
     const filteredTasks = this.tasks.filter((task) => this.matchesCurrentFilters(task));
     this.columns.forEach((column) => {
       column.tasks = filteredTasks.filter((task) => task.status === column.status);
+
+      column.tasks = this.sortTaskByPriority(column.tasks);
     });
   }
 
@@ -144,11 +164,100 @@ export class TasksComponent implements OnChanges, AfterViewInit, OnDestroy {
   editViewTask(task: Tasks) {
     this.viewTask.emit(task);
   }
+  
+  private showPermissionMessage(message: string): void {
+    this.permissionMessage = message;
+    setTimeout(() => {
+      this.permissionMessage = '';
+    }, 3000);
+  }
+  
+  private canEditTask(task: Tasks): boolean {
+    if (this.role === 'admin') {
+      return true;
+    }
+    if (this.role === 'hr') {
+      return true;
+    }
+    const loggedInUsername = this.loggedInUser.username?.trim().toLowerCase();
+    const taskAssignee = task.assignedUser?.trim().toLowerCase();
+    const isAssignedToCurrentUser = loggedInUsername === taskAssignee;
+    const isEditableStatus =
+    task.status === 'todo' ||
+    task.status === 'in-progress';
+    return isAssignedToCurrentUser && isEditableStatus;
+  }
+
+  private canDragTask(task: Tasks): boolean {
+    if (this.role === 'admin' || this.role === 'hr') {
+      return true;
+    }
+    const loggedInUsername = this.loggedInUser.username?.trim().toLowerCase();
+    const taskAssignee = task.assignedUser?.trim().toLowerCase();
+    return loggedInUsername === taskAssignee;
+  }
+
+  private canMoveTask(
+    task: Tasks,
+    currentStatus: taskStatus,
+    targetStatus: taskStatus
+  ): boolean {
+    if (currentStatus === targetStatus) {
+      return true;
+    }
+
+    if (this.role === 'admin') {
+      return true;
+    }
+
+    if (this.role === 'hr') {
+      if (
+        currentStatus === 'in-progress' &&
+        targetStatus === 'review' &&
+        !task.isCompleted
+      ) {
+        this.showPermissionMessage(
+          'Task must be marked completed before moving to Review.'
+        );
+        return false;
+      }
+      return (
+        (currentStatus === 'todo' && targetStatus === 'in-progress') ||
+        (currentStatus === 'in-progress' && targetStatus === 'todo') ||
+        (currentStatus === 'in-progress' && targetStatus === 'review') ||
+        (currentStatus === 'review' && targetStatus === 'in-progress')
+      );
+    }
+    return (
+      (currentStatus === 'todo' && targetStatus === 'in-progress') ||
+      (currentStatus === 'in-progress' && targetStatus === 'todo')
+    );
+  }
 
   drop(event: CdkDragDrop<Tasks[]>, newStatus: taskStatus): void {
     const movedTask = event.item.data as Tasks;
 
     if (!movedTask) {
+      return;
+    }
+    
+    if (!this.canDragTask(movedTask)) {
+      this.showPermissionMessage(
+        'You can move only tasks assigned to you.'
+      );
+      this.organizeTasksByColumn();
+      return;
+    }
+    const oldStatus = event.previousContainer.id as taskStatus;
+    if(
+      event.previousContainer !== event.container && 
+      !this.canMoveTask(movedTask, oldStatus, newStatus)
+    ){ 
+      this.showPermissionMessage(
+        `Access denied: ${this.role.toUpperCase()} cannot move task from ${oldStatus} to ${newStatus}.`
+      );
+      
+      this.organizeTasksByColumn();
       return;
     }
 
@@ -196,7 +305,7 @@ export class TasksComponent implements OnChanges, AfterViewInit, OnDestroy {
     this.tasks = updatedAllTasks;
 
     this.organizeTasksByColumn();
-
-    this.taskStatusChanged.emit(this.tasks);
+    
+    this.taskStatusChanged.emit({...movedTask,status: newStatus});
   }
 }

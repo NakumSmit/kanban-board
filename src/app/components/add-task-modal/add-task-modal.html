@@ -85,44 +85,42 @@
                     </div>
                 </div>
 
-                <label for="assignedUser">Assigned User * :</label>
-                <select formControlName="assignedUser">
-                    <option value="" disabled>Select Assignee</option>
-                    <option value="Aarav Mehta">Aarav Mehta</option>
-                    <option value="Karan Shah">Karan Shah</option>
-                    <option value="Neha Verma">Neha Verma</option>
-                    <option value="Priya Sharma">Priya Sharma</option>
-                    <option value="Rohan Patel">Rohan Patel</option>
-                </select>
-                <div class="error-container">
-                    @if(assignedUser?.touched && assignedUser?.hasError('required')){
-                    <p class="error-text">Assigned user is required</p>
-                    }
-                </div>
+                @if(this.role == "admin" || this.role == "hr"){
+                    <label for="assignedUser">Assigned User * :</label>
+                    <select formControlName="assignedUser">
+                        <option value="" disabled>Select Assignee</option>
+                        <option value="Aarav Mehta">Aarav Mehta</option>
+                        <option value="Karan Shah">Karan Shah</option>
+                        <option value="Neha Verma">Neha Verma</option>
+                        <option value="Priya Sharma">Priya Sharma</option>
+                        <option value="Rohan Patel">Rohan Patel</option>
+                    </select>
+                    <div class="error-container">
+                        @if(assignedUser?.touched && assignedUser?.hasError('required')){
+                            <p class="error-text">Assigned user is required</p>
+                        }
+                    </div>
+                }
 
-                <label for="status">Status * :</label>
-                <select formControlName="status">
-                    <option value="" disabled>Select Status</option>
-                    <option value="todo">Todo</option>
-                    <option value="in-progress">In Progress</option>
-                    <option value="review">Review</option>
-                    <option value="done">Done</option>
-                </select>
-                <div class="error-container">
-                    @if(status?.touched && status?.hasError('required')){
-                    <p class="error-text">Status is required</p>
-                    }
-                </div>
+                @if(mode !== 'create'){
+                    <label for="status">Status * :</label>
+                    <select formControlName="status">
+                        <option value="" disabled>Select Status</option>
+                        @for(status of allowedStatuses(); track status){
+                            <option [value]="status">{{status}}</option>
+                        }
+                    </select>
+                    <div class="error-container"></div>}
 
 
                 <div class="modal-footer">
                     <button type="button" class="cancel-btn" (click)="close()">
                         Cancel
                     </button>
-                    <button type="button" class="delete-btn" *ngIf="mode === 'edit'" (click)="showDeleteConfirm = true">
+                    <button type="button" class="delete-btn" *ngIf="mode === 'edit' && role === 'admin'" (click)="showDeleteConfirm = true">
                         Delete
                     </button>
-                    @if(showDeleteConfirm){
+                    @if(showDeleteConfirm && role=='admin'){
                         <div class="confirm-overlay">
                             <div class="confirm-modal">
                                 <h3 class="low-weight">Delete Task</h3>
@@ -140,6 +138,7 @@
                                     <button
                                         type="button"
                                         class="delete-btn"
+                                        *ngIf="mode === 'edit' && canDeleteTask()"
                                         (click)="confirmDelete()">
                                         Delete
                                     </button>
@@ -148,10 +147,29 @@
                         </div>
                     }
 
-                    <button type="submit" class="create-btn">
-                        {{ mode === "create" ? "Create Task" : mode === "edit" ? "Update Task" : "Edit" }}
+                    @if(mode === 'create'){
+                        <button type="submit" class="create-btn">
+                            Create Task
+                        </button>
+                    } @else if(mode === 'edit'){
+                        <button type="submit" class="create-btn">
+                            Update Task
+                        </button>
+                    }
+                    @else if(mode === 'view' && canEditTask()){
+                        <button type="submit" class="create-btn">
+                            Edit Task
+                        </button>
+                    }
+                    @else{
+                        <button
+                        type="button"
+                        class="create-btn"
+                        disabled>
+                        View Only
                     </button>
-                </div>
-            </form>
-        </div>
+                }
+            </div>
+        </form>
     </div>
+</div>

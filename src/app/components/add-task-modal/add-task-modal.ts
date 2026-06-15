@@ -29,8 +29,22 @@ export class AddTaskModalComponent {
   @Output() taskCreated = new EventEmitter<Tasks>();
   @Output() taskUpdated = new EventEmitter<Tasks>();
   @Output() taskDeleted = new EventEmitter<number>();
+  loggedInUser = JSON.parse(localStorage.getItem('loggedInUser') || '{}');
+  role = this.loggedInUser.role ?? 'user';
+  userName:string = this.loggedInUser.username;
+  canAssignToOthers = this.role === 'admin' || this.role === 'hr';
+  
+  canDeleteTask(): boolean {
+    return this.role === 'admin';
+  }
 
   ngOnInit() {
+    if(!this.canAssignToOthers){
+      this.taskForm.patchValue({
+        assignedUser: this.userName
+      });
+      this.taskForm.get('assignedUser')?.disable();
+    }
     if (this.selectedTask) {
       this.taskForm.patchValue({
         title: this.selectedTask.title,
@@ -64,7 +78,7 @@ export class AddTaskModalComponent {
     priority: new FormControl('', Validators.required),
     dueDate: new FormControl('', [Validators.required, this.futureDateValidator]),
     assignedUser: new FormControl('', Validators.required),
-    status: new FormControl('', Validators.required),
+    status: new FormControl('todo', Validators.required),
   });
 
   close(): void {
@@ -86,10 +100,7 @@ export class AddTaskModalComponent {
   get assignedUser() {
     return this.taskForm.get('assignedUser');
   }
-  get status() {
-    return this.taskForm.get('status');
-  }
-
+  
   addTask() {
     if (this.taskForm.valid) {
       const newTask: Tasks = {
@@ -97,8 +108,8 @@ export class AddTaskModalComponent {
         description: this.taskForm.value.description!,
         priority: this.taskForm.value.priority! as 'high' | 'medium' | 'low',
         dueDate: new Date(this.taskForm.value.dueDate!),
-        assignedUser: this.taskForm.value.assignedUser!,
-        status: this.taskForm.value.status! as 'todo' | 'in-progress' | 'review' | 'done',
+        assignedUser: this.canAssignToOthers? this.taskForm.value.assignedUser!: this.userName,
+        status: 'todo'
       };
       this.taskCreated.emit(newTask);
       this.taskForm.reset();
@@ -107,28 +118,63 @@ export class AddTaskModalComponent {
       this.taskForm.markAllAsTouched();
     }
   }
+
   deleteTask(id: number) {
     this.taskDeleted.emit(id);
     this.close();
   }
-
   showDeleteConfirm = false;
 
-confirmDelete() {
-
-  if(!this.selectedTask?.id){
-    return;
+  confirmDelete() {
+    if(!this.selectedTask?.id){
+      return;
+    }
+    
+    this.taskDeleted.emit(this.selectedTask.id);
+    this.showDeleteConfirm = false;
+    this.close();
   }
-  this.taskDeleted.emit(this.selectedTask.id);
-
-  this.showDeleteConfirm = false;
   
-  this.close();
-}
+  canEditTask(): boolean {
+    if (!this.selectedTask) {
+      return false;
+    }
+
+    if (this.role === 'admin') {
+      return true;
+    }
+
+    if (this.role === 'hr') {
+      return true;
+    }
+    
+    const isOwnTask =
+    this.selectedTask.assignedUser.trim().toLowerCase() ===
+    this.userName.trim().toLowerCase();
+    
+    const editableStatus =
+    this.selectedTask.status === 'todo' ||
+    this.selectedTask.status === 'in-progress';
+    
+    return isOwnTask && editableStatus;
+  }
 
   gotoEditMode() {
+    if(!this.canEditTask()){
+      return;
+    }
     this.mode = 'edit';
     this.taskForm.enable();
+  }
+
+  allowedStatuses(): string[] {
+    if(this.role === 'admin'){
+      return ['todo','in-progress','review','done'];
+    }
+    if(this.role === 'hr'){
+      return ['todo','in-progress','review'];
+    }
+    return ['todo','in-progress'];
   }
 
   updateTask() {
@@ -150,19 +196,13 @@ confirmDelete() {
     }
   }
 
-futureDateValidator(
-  control: AbstractControl
-): ValidationErrors | null {
-  
-  if (!control.value) return null;
-
-  const selectedDate = new Date(control.value);
-  const today = new Date();
-
-  today.setHours(0, 0, 0, 0);
-
-  return selectedDate < today
+  futureDateValidator(control: AbstractControl): ValidationErrors | null {
+    if (!control.value) return null;
+    const selectedDate = new Date(control.value);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return selectedDate < today
     ? { pastDate: true }
     : null;
-}
+  }
 }

@@ -6,6 +6,7 @@ export interface Tasks {
     dueDate: Date,
     assignedUser: string,
     status: "todo" | "in-progress" | "review" | "done",
+    isCompleted?: boolean,
 }
 
 export interface ApiTasks {
