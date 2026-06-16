@@ -1,14 +1,20 @@
 <div class="modal-overlay" (click)="close()">
     <div class="modal-container" (click)="$event.stopPropagation()">
         <div class="modal-header">
-            <h2>{{mode === "create" ? "Create Task" : mode === "edit" ? "Edit Task" : "View Task"}}</h2>
-            <button class="close-btn" (click)="close()"> ✕ </button>
-        </div>
+            <div class="header-content">
+                <h2>{{mode === "create" ? "Create Task" : mode === "edit" ? "Edit Task" : "View Task Details"}}
+                    @if(mode === 'view'){
+                    <span class="view-only-badge">VIEW ONLY</span>
+                    }
+                </h2>
+                </div>
+                <button class="close-btn" (click)="close()">✕</button>
+            </div>
         <div class="modal-body">
 
             <form [formGroup]="taskForm" (ngSubmit)="mode === 'create' ? addTask() : mode === 'edit' ? updateTask() : gotoEditMode()">
 
-                <label for="title">Title:</label>
+                <label for="title">Title * :</label>
                 <input type="text"
                 [placeholder]="
                 mode === 'create'
@@ -29,7 +35,7 @@
                     }
                 </div>
 
-                <label for="description">Description:</label>
+                <label for="description">Description * :</label>
                 <input type="text" 
                 [placeholder]="
                 mode === 'create'
@@ -52,7 +58,7 @@
 
                 <div class="col_2">
                     <div class="priority-container">
-                        <label for="priority">Priority:</label>
+                        <label for="priority">Priority * :</label>
                         <select formControlName="priority">
                             <option value="" disabled>Select Priority</option>
                             <option value="low">Low</option>
@@ -67,57 +73,54 @@
                     </div>
 
                     <div class="duedate-container">
-                        <label for="dueDate">Due Date:</label>
-                        <input type="date" placeholder="Due Date" formControlName="dueDate">
+                        <label for="dueDate">Due Date * :</label>
+                        <input type="date" placeholder="Due Date" formControlName="dueDate" [min]="todayDate">
                         <div class="error-container">
                             @if(dueDate?.touched && dueDate?.hasError('required')){
-                            <p class="error-text">Due date is required</p>
-                            }
+                                <p class="error-text">Due date is required</p>
+                            } @else if(dueDate?.touched && dueDate?.hasError('pastDate')){
+                                <p class="error-text">Due date cannot be before today.</p>
+                            } 
                         </div>
                     </div>
                 </div>
 
-                <label for="assignedUser">Assigned User:</label>
-                <input type="text" 
-                [placeholder]="
-                mode === 'create'
-                ? 'Enter Assigned User'
-                : mode === 'edit'
-                ? 'Edit Assigned User'
-                : 'View Assigned User'" 
-                formControlName="assignedUser">
-                <div class="error-container">
-                    @if(assignedUser?.touched && assignedUser?.hasError('required')){
-                    <p class="error-text">Assigned user is required</p>
-                    }
-                    @else if(assignedUser?.touched && assignedUser?.hasError('pattern')){
-                    <p class="error-text">Please enter a valid user name.</p>
-                    }
-                </div>
+                @if(this.role == "admin" || this.role == "hr"){
+                    <label for="assignedUser">Assigned User * :</label>
+                    <select formControlName="assignedUser">
+                        <option value="" disabled>Select Assignee</option>
+                        <option value="Aarav Mehta">Aarav Mehta</option>
+                        <option value="Karan Shah">Karan Shah</option>
+                        <option value="Neha Verma">Neha Verma</option>
+                        <option value="Priya Sharma">Priya Sharma</option>
+                        <option value="Rohan Patel">Rohan Patel</option>
+                    </select>
+                    <div class="error-container">
+                        @if(assignedUser?.touched && assignedUser?.hasError('required')){
+                            <p class="error-text">Assigned user is required</p>
+                        }
+                    </div>
+                }
 
-                <label for="status">Status:</label>
-                <select formControlName="status">
-                    <option value="" disabled>Select Status</option>
-                    <option value="todo">Todo</option>
-                    <option value="in-progress">In Progress</option>
-                    <option value="review">Review</option>
-                    <option value="done">Done</option>
-                </select>
-                <div class="error-container">
-                    @if(status?.touched && status?.hasError('required')){
-                    <p class="error-text">Status is required</p>
-                    }
-                </div>
+                @if(mode !== 'create'){
+                    <label for="status">Status * :</label>
+                    <select formControlName="status">
+                        <option value="" disabled>Select Status</option>
+                        @for(status of allowedStatuses(); track status){
+                            <option [value]="status">{{status}}</option>
+                        }
+                    </select>
+                    <div class="error-container"></div>}
 
 
                 <div class="modal-footer">
                     <button type="button" class="cancel-btn" (click)="close()">
                         Cancel
                     </button>
-                    <button type="button" class="delete-btn" *ngIf="mode === 'edit'" (click)="showDeleteConfirm = true">
+                    <button type="button" class="delete-btn" *ngIf="mode === 'edit' && role === 'admin'" (click)="showDeleteConfirm = true">
                         Delete
                     </button>
-                    @if(showDeleteConfirm){
+                    @if(showDeleteConfirm && role=='admin'){
                         <div class="confirm-overlay">
                             <div class="confirm-modal">
                                 <h3 class="low-weight">Delete Task</h3>
@@ -135,6 +138,7 @@
                                     <button
                                         type="button"
                                         class="delete-btn"
+                                        *ngIf="mode === 'edit' && canDeleteTask()"
                                         (click)="confirmDelete()">
                                         Delete
                                     </button>
@@ -143,10 +147,29 @@
                         </div>
                     }
 
-                    <button type="submit" class="create-btn">
-                        {{ mode === "create" ? "Create Task" : mode === "edit" ? "Update Task" : "Edit" }}
+                    @if(mode === 'create'){
+                        <button type="submit" class="create-btn">
+                            Create Task
+                        </button>
+                    } @else if(mode === 'edit'){
+                        <button type="submit" class="create-btn">
+                            Update Task
+                        </button>
+                    }
+                    @else if(mode === 'view' && canEditTask()){
+                        <button type="submit" class="create-btn">
+                            Edit Task
+                        </button>
+                    }
+                    @else{
+                        <button
+                        type="button"
+                        class="create-btn"
+                        disabled>
+                        View Only
                     </button>
-                </div>
-            </form>
-        </div>
+                }
+            </div>
+        </form>
     </div>
+</div>

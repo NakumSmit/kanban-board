@@ -1,0 +1,212 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "username": "admin",
+      "email": "admin@gmail.com",
+      "password": "admin@123",
+      "role": "admin"
+    },
+    {
+      "id": 2,
+      "username": "HRMS",
+      "email": "hr@gmail.com",
+      "password": "hr@123",
+      "role": "hr"
+    },
+    {
+      "id": 3,
+      "username": "smit",
+      "email": "smitnakum9@gmail.com",
+      "password": "Smit#8866",
+      "role": "user"
+    },
+    {
+      "id": 4,
+      "username": "Aarav Mehta",
+      "email": "aaravmehta@gmail.com",
+      "password": "aaravmehta@123",
+      "role": "user"
+    },
+    {
+      "id": 5,
+      "username": "Karan Shah",
+      "email": "karanshah@gmail.com",
+      "password": "karanshah@123",
+      "role": "user"
+    },
+    {
+      "id": 6,
+      "username": "Neha Verma",
+      "email": "nehaverma@gmail.com",
+      "password": "nehaverma@123",
+      "role": "user"
+    },
+    {
+      "id": 7,
+      "username": "Priya Sharma",
+      "email": "priyasharma@gmail.com",
+      "password": "priyasharma@123",
+      "role": "user"
+    },
+    {
+      "id": 8,
+      "username": "Rohan Patel",
+      "email": "rohanpatel@gmail.com",
+      "password": "rohanpatel@123",
+      "role": "user"
+    }
+  ],
+  "tasks": [
+    {
+      "title": "Buy groceries",
+      "description": "Purchase vegetables, milk, bread, rice, and cooking oil from the supermarket.",
+      "priority": "medium",
+      "dueDate": "2026-06-10T00:00:00.000Z",
+      "assignedUser": "Aarav Mehta",
+      "status": "todo",
+      "id": 1,
+      "isCompleted": false
+    },
+    {
+      "title": "Prepare monthly budget",
+      "description": "Calculate expenses, savings, rent, bills, and emergency fund for this month.",
+      "priority": "high",
+      "dueDate": "2026-06-11T00:00:00.000Z",
+      "assignedUser": "Priya Sharma",
+      "status": "in-progress",
+      "id": 2,
+      "isCompleted": false
+    },
+    {
+      "title": "Clean storage room",
+      "description": "Organize old boxes, remove unused items, and label important documents.",
+      "priority": "low",
+      "dueDate": "2026-06-14T00:00:00.000Z",
+      "assignedUser": "Rohan Patel",
+      "status": "todo",
+      "id": 3,
+      "isCompleted": false
+    },
+    {
+      "title": "Book doctor appointment",
+      "description": "Schedule a routine health checkup appointment for next week.",
+      "priority": "high",
+      "dueDate": "2026-06-09T00:00:00.000Z",
+      "assignedUser": "Neha Verma",
+      "status": "review",
+      "id": 4,
+      "isCompleted": true
+    },
+    {
+      "title": "Plan weekend trip",
+      "description": "Select destination, compare hotel prices, check transport options, and prepare itinerary.",
+      "priority": "medium",
+      "dueDate": "2026-06-13T00:00:00.000Z",
+      "assignedUser": "Karan Shah",
+      "status": "in-progress",
+      "id": 5,
+      "isCompleted": false
+    },
+    {
+      "title": "Pay electricity bill",
+      "description": "Check current bill amount and complete online payment before the due dueDate.",
+      "priority": "high",
+      "dueDate": "2026-06-08T00:00:00.000Z",
+      "assignedUser": "Aarav Mehta",
+      "status": "done",
+      "id": 6,
+      "isCompleted": true
+    },
+    {
+      "title": "Organize birthday party",
+      "description": "Prepare guest list, order cake, decorate room, and arrange snacks.",
+      "priority": "medium",
+      "dueDate": "2026-06-18T00:00:00.000Z",
+      "assignedUser": "Priya Sharma",
+      "status": "todo",
+      "id": 7,
+      "isCompleted": false
+    },
+    {
+      "title": "Service bike",
+      "description": "Take the bike to the garage for oil change, brake check, and general servicing.",
+      "priority": "medium",
+      "dueDate": "2026-06-12T00:00:00.000Z",
+      "assignedUser": "Rohan Patel",
+      "status": "review",
+      "id": 8,
+      "isCompleted": true
+    },
+    {
+      "title": "Read finance book",
+      "description": "Complete three chapters of the personal finance book and note key points.",
+      "priority": "low",
+      "dueDate": "2026-06-20T00:00:00.000Z",
+      "assignedUser": "Neha Verma",
+      "status": "in-progress",
+      "id": 9,
+      "isCompleted": false
+    },
+    {
+      "title": "Arrange documents",
+      "description": "Sort entity proofs, bank papers, certificates, and insurance documents into folders.",
+      "priority": "high",
+      "dueDate": "2026-06-16T00:00:00.000Z",
+      "assignedUser": "Karan Shah",
+      "status": "done",
+      "id": 10,
+      "isCompleted": true
+    },
+    {
+      "title": "Renew gym membership",
+      "description": "Visit the gym office, check available plans, and renew the membership for the next three months.",
+      "priority": "medium",
+      "dueDate": "2026-06-21T00:00:00.000Z",
+      "assignedUser": "Aarav Mehta",
+      "status": "todo",
+      "id": 11,
+      "isCompleted": false
+    },
+    {
+      "title": "Water balcony plants",
+      "description": "Water all balcony plants, remove dry leaves, and add fertilizer to the rose plant.",
+      "priority": "low",
+      "dueDate": "2026-06-09T00:00:00.000Z",
+      "assignedUser": "Priya Sharma",
+      "status": "done",
+      "id": 12,
+      "isCompleted": true
+    },
+    {
+      "title": "Prepare travel checklist",
+      "description": "Create a checklist for clothes, documents, charger, medicines, wallet, and travel tickets.",
+      "priority": "medium",
+      "dueDate": "2026-06-17T00:00:00.000Z",
+      "assignedUser": "Karan Shah",
+      "status": "in-progress",
+      "id": 13,
+      "isCompleted": false
+    },
+    {
+      "title": "Repair kitchen tap",
+      "description": "Call the plumber, explain the leakage issue, and get the kitchen tap repaired.",
+      "priority": "high",
+      "dueDate": "2026-06-10T00:00:00.000Z",
+      "assignedUser": "Rohan Patel",
+      "status": "todo",
+      "id": 14,
+      "isCompleted": false
+    },
+    {
+      "title": "Organize study notes",
+      "description": "Sort handwritten notes by subject, remove duplicate pages, and create separate folders.",
+      "priority": "medium",
+      "dueDate": "2026-06-19T00:00:00.000Z",
+      "assignedUser": "Neha Verma",
+      "status": "review",
+      "id": 15,
+      "isCompleted": true
+    }
+  ]
+}

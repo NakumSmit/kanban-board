@@ -9,31 +9,25 @@ import { ApiTasks, Tasks } from '../../models/tasks';
 })
 export class ApiTasksService {
 
-  private apiUrl = 'https://dummyjson.com/c/6147-2c97-496c-995d'
+  private apiUrl = 'http://localhost:3000/tasks';
 
   constructor(private http: HttpClient) {}
 
-  getTasks(): Observable<ApiTasks[]> {
-    return this.http
-      .get<{ tasks: ApiTasks[] }>(this.apiUrl)
-      .pipe(map((response) => response.tasks));
-  }
-
   getBoardTasks(): Observable<Tasks[]> {
-    return this.http.get<{ tasks: ApiTasks[] }>(this.apiUrl).pipe(
-      map((response) => response.tasks.map((task) => this.mapApiTaskToTask(task)))
+    return this.http.get< Tasks[] >(this.apiUrl).pipe(
+      map((tasks: Tasks[]) => tasks.map((task: Tasks) => ({...task, dueDate: new Date(task.dueDate)})))
     );
   }
 
-  private mapApiTaskToTask(apiTask: ApiTasks): Tasks {
-    return {
-      taskId: apiTask.id,
-      title: apiTask.title,
-      description: apiTask.description,
-      priority: apiTask.priority,
-      dueDate: new Date(apiTask.date),
-      assignedUser: apiTask.user,
-      status: apiTask.status,
-    };
+  addTask(task: Tasks): Observable<Tasks>{
+    return this.http.post<Tasks>(this.apiUrl, task);
+  }
+
+  updateTask(task: Tasks): Observable<Tasks>{
+    return this.http.put<Tasks>(`${this.apiUrl}/${task.id}`, task);
+  }
+
+  deleteTask(id: number): Observable<void>{
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 }

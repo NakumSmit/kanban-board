@@ -7,6 +7,8 @@ import {
   NgForm,
   ReactiveFormsModule,
   Validators,
+  AbstractControl,
+  ValidationErrors
 } from '@angular/forms';
 import { NgClass, NgIf } from '@angular/common';
 
@@ -22,13 +24,27 @@ export class AddTaskModalComponent {
 
   @Input() mode: 'create' | 'edit' | 'view' = 'create';
   @Input() selectedTask?: Tasks;
-
+  todayDate = new Date().toISOString().split('T')[0];
   @Output() closeModal = new EventEmitter<void>();
   @Output() taskCreated = new EventEmitter<Tasks>();
   @Output() taskUpdated = new EventEmitter<Tasks>();
-  @Output() taskDeleted = new EventEmitter<string>();
+  @Output() taskDeleted = new EventEmitter<number>();
+  loggedInUser = JSON.parse(localStorage.getItem('loggedInUser') || '{}');
+  role = this.loggedInUser.role ?? 'user';
+  userName:string = this.loggedInUser.username;
+  canAssignToOthers = this.role === 'admin' || this.role === 'hr';
+  
+  canDeleteTask(): boolean {
+    return this.role === 'admin';
+  }
 
   ngOnInit() {
+    if(!this.canAssignToOthers){
+      this.taskForm.patchValue({
+        assignedUser: this.userName
+      });
+      this.taskForm.get('assignedUser')?.disable();
+    }
     if (this.selectedTask) {
       this.taskForm.patchValue({
         title: this.selectedTask.title,
@@ -60,20 +76,13 @@ export class AddTaskModalComponent {
       Validators.pattern('[a-zA-Z].*'),
     ]),
     priority: new FormControl('', Validators.required),
-    dueDate: new FormControl('', Validators.required),
-    assignedUser: new FormControl('', [Validators.required, Validators.pattern('[a-zA-Z].*')]),
-    status: new FormControl('', Validators.required),
+    dueDate: new FormControl('', [Validators.required, this.futureDateValidator]),
+    assignedUser: new FormControl('', Validators.required),
+    status: new FormControl('todo', Validators.required),
   });
 
   close(): void {
     this.closeModal.emit();
-  }
-
-  private generateTaskId(): string {
-    const date = new Date().getTime();
-    const random = Math.random();
-    const id = `TASK-${date.toString(16).toUpperCase()}-${random.toString(16).slice(2).toUpperCase()}`;
-    return id;
   }
 
   get title() {
@@ -91,20 +100,17 @@ export class AddTaskModalComponent {
   get assignedUser() {
     return this.taskForm.get('assignedUser');
   }
-  get status() {
-    return this.taskForm.get('status');
-  }
-
+  
   addTask() {
     if (this.taskForm.valid) {
       const newTask: Tasks = {
-        taskId: this.generateTaskId(),
         title: this.taskForm.value.title!,
         description: this.taskForm.value.description!,
         priority: this.taskForm.value.priority! as 'high' | 'medium' | 'low',
         dueDate: new Date(this.taskForm.value.dueDate!),
-        assignedUser: this.taskForm.value.assignedUser!,
-        status: this.taskForm.value.status! as 'todo' | 'in-progress' | 'review' | 'done',
+        assignedUser: this.canAssignToOthers? this.taskForm.value.assignedUser!: this.userName,
+        status: 'todo',
+        isCompleted: false
       };
       this.taskCreated.emit(newTask);
       this.taskForm.reset();
@@ -113,31 +119,69 @@ export class AddTaskModalComponent {
       this.taskForm.markAllAsTouched();
     }
   }
-  deleteTask(taskId: string) {
-    this.taskDeleted.emit(taskId);
+
+  deleteTask(id: number) {
+    this.taskDeleted.emit(id);
     this.close();
   }
-
   showDeleteConfirm = false;
 
-confirmDelete() {
-
-  this.taskDeleted.emit(this.selectedTask!.taskId);
-
-  this.showDeleteConfirm = false;
+  confirmDelete() {
+    if(!this.selectedTask?.id){
+      return;
+    }
+    
+    this.taskDeleted.emit(this.selectedTask.id);
+    this.showDeleteConfirm = false;
+    this.close();
+  }
   
-  this.close();
-}
+  canEditTask(): boolean {
+    if (!this.selectedTask) {
+      return false;
+    }
+
+    if (this.role === 'admin') {
+      return true;
+    }
+
+    if (this.role === 'hr') {
+      return true;
+    }
+    
+    const isOwnTask =
+    this.selectedTask.assignedUser.trim().toLowerCase() ===
+    this.userName.trim().toLowerCase();
+    
+    const editableStatus =
+    this.selectedTask.status === 'todo' ||
+    this.selectedTask.status === 'in-progress';
+    
+    return isOwnTask && editableStatus;
+  }
 
   gotoEditMode() {
+    if(!this.canEditTask()){
+      return;
+    }
     this.mode = 'edit';
     this.taskForm.enable();
+  }
+
+  allowedStatuses(): string[] {
+    if(this.role === 'admin'){
+      return ['todo','in-progress','review','done'];
+    }
+    if(this.role === 'hr'){
+      return ['todo','in-progress','review'];
+    }
+    return ['todo','in-progress'];
   }
 
   updateTask() {
     if (this.taskForm.valid && this.selectedTask) {
       const updatedTask: Tasks = {
-        taskId: this.selectedTask.taskId,
+        id: this.selectedTask.id,
         title: this.taskForm.value.title!,
         description: this.taskForm.value.description!,
         priority: this.taskForm.value.priority! as 'high' | 'medium' | 'low',
@@ -151,5 +195,15 @@ confirmDelete() {
     } else {
       this.taskForm.markAllAsTouched();
     }
+  }
+
+  futureDateValidator(control: AbstractControl): ValidationErrors | null {
+    if (!control.value) return null;
+    const selectedDate = new Date(control.value);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return selectedDate < today
+    ? { pastDate: true }
+    : null;
   }
 }

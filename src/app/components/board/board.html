@@ -59,7 +59,8 @@
             [selectedPriority]="selectedPriority"
             [selectedAssignee]="selectedAssignee" 
             (viewTask)="openViewTaskModal($event)"
-            (taskStatusChanged)="updateTaskStatusAfterDrop($event)">
+            (taskStatusChanged)="updateTaskStatusAfterDrop($event)"
+            (taskCompletedChanged)="updateTaskCompleted($event)">
             </app-tasks>
         </div>
         }

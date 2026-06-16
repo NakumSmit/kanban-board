@@ -1,8 +1,6 @@
 import {
   Component,
   Input,
-  signal,
-  OnInit,
   OnChanges,
   SimpleChanges,
   Output,
@@ -14,9 +12,7 @@ import {
   ElementRef,
 } from '@angular/core';
 import { DatePipe, TitleCasePipe, NgClass } from '@angular/common';
-import { ApiTasksService } from '../../services/api-tasks/api-tasks.service';
 import { Tasks } from '../../models/tasks';
-import { ApiTasks } from '../../models/tasks';
 import {
   DragDropModule,
   CdkDragDrop,
@@ -41,8 +37,7 @@ interface KanbanColumn {
   templateUrl: './tasks.html',
   styleUrls: ['./tasks.scss', '../../app.scss'],
 })
-export class TasksComponent implements OnInit, OnChanges, AfterViewInit, OnDestroy {
-  constructor(private apiTaskService: ApiTasksService) {}
+export class TasksComponent implements OnChanges, AfterViewInit, OnDestroy {
 
   @ViewChildren('columnScrollContainer')
   columnScrollContainers!: QueryList<ElementRef<HTMLElement>>;
@@ -50,12 +45,16 @@ export class TasksComponent implements OnInit, OnChanges, AfterViewInit, OnDestr
 
   @Input() tasks: Tasks[] = [];
   @Output() viewTask = new EventEmitter<Tasks>();
-  @Output() taskStatusChanged = new EventEmitter<Tasks[]>();
+  @Output() taskStatusChanged = new EventEmitter<Tasks>();
+  @Output() taskCompletedChanged = new EventEmitter<Tasks>();
   @Input() searchTerm: string = '';
   @Input() selectedPriority: string = '';
   @Input() selectedAssignee: string = '';
-  users: ApiTasks[] = [] ;
   connectedDropLists: taskStatus[] = ['todo', 'in-progress', 'review', 'done'];
+  loggedInUser = JSON.parse(localStorage.getItem('loggedInUser') || '{}');
+  role = this.loggedInUser.role || 'user';
+  permissionMessage = '';
+  private moveErrorMessage = '';
 
   columns: KanbanColumn[] = [
     {
@@ -83,14 +82,6 @@ export class TasksComponent implements OnInit, OnChanges, AfterViewInit, OnDestr
       tasks: [],
     },
   ];
-  
-  ngOnInit() {
-    this.apiTaskService.getTasks()
-    .pipe(takeUntil(this.destroy$))
-    .subscribe((res: any) => {
-      this.users = res;
-    });
-  }
 
   ngOnChanges(changes: SimpleChanges) {
     if (
@@ -127,10 +118,51 @@ export class TasksComponent implements OnInit, OnChanges, AfterViewInit, OnDestr
     this.destroy$.complete();
   }
 
+  private sortTaskByPriority(tasks: Tasks[]){
+    const priorityOrder: Record<string, number> = { 
+      high: 1,
+      medium: 2,
+      low: 3,
+    };
+
+    return [...tasks].sort((a, b) => {
+      const aPriority = a.priority?.trim().toLowerCase() || '';
+      const bPriority = b.priority?.trim().toLowerCase() || '';
+      return priorityOrder[aPriority] - priorityOrder[bPriority];
+    });
+  }
+
   organizeTasksByColumn() {
     const filteredTasks = this.tasks.filter((task) => this.matchesCurrentFilters(task));
     this.columns.forEach((column) => {
       column.tasks = filteredTasks.filter((task) => task.status === column.status);
+
+      column.tasks = this.sortTaskByPriority(column.tasks);
+    });
+  }
+
+  canMarkCompleted(task: Tasks): boolean{
+    const loggedInUsername = this.loggedInUser.username?.trim().toLowerCase();
+    const taskAssignee = task.assignedUser?.trim().toLowerCase();
+
+    return(
+      this.role === 'admin' ||
+      this.role === 'hr' ||
+      loggedInUsername === taskAssignee
+    );
+  }
+
+  markTaskCompleted(task: Tasks, event: Event): void {
+    event.stopPropagation();
+    if(!this.canMarkCompleted(task)){
+      this.showPermissionMessage(
+        'You cannot complete tasks assigned to another user.'
+      );
+      return;
+    }
+    task.isCompleted = !task.isCompleted;
+    this.taskCompletedChanged.emit({
+      ...task
     });
   }
 
@@ -158,11 +190,120 @@ export class TasksComponent implements OnInit, OnChanges, AfterViewInit, OnDestr
   editViewTask(task: Tasks) {
     this.viewTask.emit(task);
   }
+  
+  private showPermissionMessage(message: string): void {
+    this.permissionMessage = message;
+    setTimeout(() => {
+      this.permissionMessage = '';
+    }, 3000);
+  }
+  
+  private canEditTask(task: Tasks): boolean {
+    if (this.role === 'admin') {
+      return true;
+    }
+    if (this.role === 'hr') {
+      return true;
+    }
+    const loggedInUsername = this.loggedInUser.username?.trim().toLowerCase();
+    const taskAssignee = task.assignedUser?.trim().toLowerCase();
+    const isAssignedToCurrentUser = loggedInUsername === taskAssignee;
+    const isEditableStatus =
+    task.status === 'todo' ||
+    task.status === 'in-progress';
+    return isAssignedToCurrentUser && isEditableStatus;
+  }
+
+  private canDragTask(task: Tasks): boolean {
+    if (this.role === 'admin' || this.role === 'hr') {
+      return true;
+    }
+    const loggedInUsername = this.loggedInUser.username?.trim().toLowerCase();
+    const taskAssignee = task.assignedUser?.trim().toLowerCase();
+    return loggedInUsername === taskAssignee;
+  }
+
+  private canMoveTask(
+    task: Tasks,
+    currentStatus: taskStatus,
+    targetStatus: taskStatus
+  ): boolean {
+
+    this.moveErrorMessage = '';
+
+    if (currentStatus === targetStatus) {
+      return true;
+    }
+
+    if (this.role === 'admin') {
+      if(currentStatus ==='in-progress' &&
+        targetStatus === 'review' &&
+        !task.isCompleted
+      ){
+        this.moveErrorMessage =
+        'Task must be marked completed before moving to Review.';
+        return false;
+      }
+      return true;
+    }
+
+    if (this.role === 'hr') {
+      if (
+        currentStatus === 'in-progress' &&
+        targetStatus === 'review' &&
+        !task.isCompleted
+      ) {
+        this.moveErrorMessage = 
+        'Task must be marked completed before moving to Review.';
+        return false;
+      }
+      const allowedMove = 
+      (currentStatus === 'todo' && targetStatus === 'in-progress') ||
+      (currentStatus === 'in-progress' && targetStatus === 'todo') ||
+      (currentStatus === 'in-progress' && targetStatus === 'review') ||
+      (currentStatus === 'review' && targetStatus === 'in-progress');
+
+      if(!allowedMove){
+        this.moveErrorMessage = 
+        `Access denied: ${this.role.toUpperCase()} cannot move task from ${currentStatus} to ${targetStatus}.`
+      }
+      return allowedMove;
+    }
+    const allowedMove = 
+    (currentStatus === 'todo' && targetStatus === 'in-progress') ||
+    (currentStatus === 'in-progress' && targetStatus === 'todo'); 
+
+    if(!allowedMove){
+      this.moveErrorMessage =
+      `Access denied: ${this.role.toUpperCase()} cannot move task from ${currentStatus} to ${targetStatus}.`;
+    }
+    return allowedMove;
+  }
 
   drop(event: CdkDragDrop<Tasks[]>, newStatus: taskStatus): void {
     const movedTask = event.item.data as Tasks;
 
     if (!movedTask) {
+      return;
+    }
+    
+    if (!this.canDragTask(movedTask)) {
+      this.showPermissionMessage(
+        'You can move only tasks assigned to you.'
+      );
+      this.organizeTasksByColumn();
+      return;
+    }
+    const oldStatus = event.previousContainer.id as taskStatus;
+    if(
+      event.previousContainer !== event.container && 
+      !this.canMoveTask(movedTask, oldStatus, newStatus)
+    ){
+      if(this.moveErrorMessage){
+        this.showPermissionMessage(this.moveErrorMessage);
+      }
+
+      this.organizeTasksByColumn();
       return;
     }
 
@@ -178,7 +319,7 @@ export class TasksComponent implements OnInit, OnChanges, AfterViewInit, OnDestr
     }
 
     const movedTaskIndexInColumn = event.container.data.findIndex(
-      (task) => task.taskId === movedTask.taskId,
+      (task) => task.id === movedTask.id,
     );
 
     if (movedTaskIndexInColumn !== -1) {
@@ -195,12 +336,12 @@ export class TasksComponent implements OnInit, OnChanges, AfterViewInit, OnDestr
       })),
     );
 
-    const visibleTaskIds = new Set(updatedVisibleTasks.map((task) => String(task.taskId)));
+    const visibleTaskIds = new Set(updatedVisibleTasks.map((task) => String(task.id)));
 
     const visibleQueue = [...updatedVisibleTasks];
 
     const updatedAllTasks = this.tasks.map((task) => {
-      if (visibleTaskIds.has(String(task.taskId))) {
+      if (visibleTaskIds.has(String(task.id))) {
         return visibleQueue.shift()!;
       }
 
@@ -210,7 +351,7 @@ export class TasksComponent implements OnInit, OnChanges, AfterViewInit, OnDestr
     this.tasks = updatedAllTasks;
 
     this.organizeTasksByColumn();
-
-    this.taskStatusChanged.emit(this.tasks);
+    
+    this.taskStatusChanged.emit({...movedTask,status: newStatus});
   }
 }

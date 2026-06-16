@@ -24,6 +24,35 @@
     min-width: 0;
 }
 
+.right-nav{
+    display: flex;
+    align-items: baseline;
+    gap: 100px;
+}
+
+.username-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 0.4px;
+  background: rgba(245, 223, 77, 0.08);
+  border: 1px solid rgba(245, 223, 77, 0.3);
+  color: #f5df4d;
+  box-shadow: 0 0 12px rgba(245, 223, 77, 0.12);
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #f5df4d;
+  box-shadow: 0 0 10px rgba(245, 223, 77, 0.7);
+}
+
 .logo-name {
     font-size: 18px;
     color: #fff;
