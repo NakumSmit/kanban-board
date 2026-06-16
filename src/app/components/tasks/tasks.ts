@@ -54,6 +54,7 @@ export class TasksComponent implements OnChanges, AfterViewInit, OnDestroy {
   loggedInUser = JSON.parse(localStorage.getItem('loggedInUser') || '{}');
   role = this.loggedInUser.role || 'user';
   permissionMessage = '';
+  private moveErrorMessage = '';
 
   columns: KanbanColumn[] = [
     {
@@ -140,6 +141,31 @@ export class TasksComponent implements OnChanges, AfterViewInit, OnDestroy {
     });
   }
 
+  canMarkCompleted(task: Tasks): boolean{
+    const loggedInUsername = this.loggedInUser.username?.trim().toLowerCase();
+    const taskAssignee = task.assignedUser?.trim().toLowerCase();
+
+    return(
+      this.role === 'admin' ||
+      this.role === 'hr' ||
+      loggedInUsername === taskAssignee
+    );
+  }
+
+  markTaskCompleted(task: Tasks, event: Event): void {
+    event.stopPropagation();
+    if(!this.canMarkCompleted(task)){
+      this.showPermissionMessage(
+        'You cannot complete tasks assigned to another user.'
+      );
+      return;
+    }
+    task.isCompleted = !task.isCompleted;
+    this.taskCompletedChanged.emit({
+      ...task
+    });
+  }
+
   matchesCurrentFilters(task: Tasks): boolean {
     const normalizedSearch = this.searchTerm.trim().toLowerCase();
     const normalizedPriority = this.selectedPriority.trim().toLowerCase();
@@ -202,11 +228,22 @@ export class TasksComponent implements OnChanges, AfterViewInit, OnDestroy {
     currentStatus: taskStatus,
     targetStatus: taskStatus
   ): boolean {
+
+    this.moveErrorMessage = '';
+
     if (currentStatus === targetStatus) {
       return true;
     }
 
     if (this.role === 'admin') {
+      if(currentStatus ==='in-progress' &&
+        targetStatus === 'review' &&
+        !task.isCompleted
+      ){
+        this.moveErrorMessage =
+        'Task must be marked completed before moving to Review.';
+        return false;
+      }
       return true;
     }
 
@@ -216,22 +253,31 @@ export class TasksComponent implements OnChanges, AfterViewInit, OnDestroy {
         targetStatus === 'review' &&
         !task.isCompleted
       ) {
-        this.showPermissionMessage(
-          'Task must be marked completed before moving to Review.'
-        );
+        this.moveErrorMessage = 
+        'Task must be marked completed before moving to Review.';
         return false;
       }
-      return (
-        (currentStatus === 'todo' && targetStatus === 'in-progress') ||
-        (currentStatus === 'in-progress' && targetStatus === 'todo') ||
-        (currentStatus === 'in-progress' && targetStatus === 'review') ||
-        (currentStatus === 'review' && targetStatus === 'in-progress')
-      );
-    }
-    return (
+      const allowedMove = 
       (currentStatus === 'todo' && targetStatus === 'in-progress') ||
-      (currentStatus === 'in-progress' && targetStatus === 'todo')
-    );
+      (currentStatus === 'in-progress' && targetStatus === 'todo') ||
+      (currentStatus === 'in-progress' && targetStatus === 'review') ||
+      (currentStatus === 'review' && targetStatus === 'in-progress');
+
+      if(!allowedMove){
+        this.moveErrorMessage = 
+        `Access denied: ${this.role.toUpperCase()} cannot move task from ${currentStatus} to ${targetStatus}.`
+      }
+      return allowedMove;
+    }
+    const allowedMove = 
+    (currentStatus === 'todo' && targetStatus === 'in-progress') ||
+    (currentStatus === 'in-progress' && targetStatus === 'todo'); 
+
+    if(!allowedMove){
+      this.moveErrorMessage =
+      `Access denied: ${this.role.toUpperCase()} cannot move task from ${currentStatus} to ${targetStatus}.`;
+    }
+    return allowedMove;
   }
 
   drop(event: CdkDragDrop<Tasks[]>, newStatus: taskStatus): void {
@@ -252,11 +298,11 @@ export class TasksComponent implements OnChanges, AfterViewInit, OnDestroy {
     if(
       event.previousContainer !== event.container && 
       !this.canMoveTask(movedTask, oldStatus, newStatus)
-    ){ 
-      this.showPermissionMessage(
-        `Access denied: ${this.role.toUpperCase()} cannot move task from ${oldStatus} to ${newStatus}.`
-      );
-      
+    ){
+      if(this.moveErrorMessage){
+        this.showPermissionMessage(this.moveErrorMessage);
+      }
+
       this.organizeTasksByColumn();
       return;
     }

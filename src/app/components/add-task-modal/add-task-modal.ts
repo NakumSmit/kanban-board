@@ -109,7 +109,8 @@ export class AddTaskModalComponent {
         priority: this.taskForm.value.priority! as 'high' | 'medium' | 'low',
         dueDate: new Date(this.taskForm.value.dueDate!),
         assignedUser: this.canAssignToOthers? this.taskForm.value.assignedUser!: this.userName,
-        status: 'todo'
+        status: 'todo',
+        isCompleted: false
       };
       this.taskCreated.emit(newTask);
       this.taskForm.reset();

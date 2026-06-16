@@ -48,7 +48,6 @@
 
             <div class="task-card-footer">
               <div class="priority-label">
-                Priority :
                 @switch (task.priority) {
                   @case ('low') {
                     <span class="priority low"> Low </span>
@@ -61,12 +60,26 @@
                   }
                 }
               </div>
+              <div class="footer-right">
+                @if(column.status === 'in-progress'){
+                  <button
+                  class="complete-btn"
+                  [class.completed]="task.isCompleted"
+                  [disabled]="!canMarkCompleted(task)"
+                  (click)="markTaskCompleted(task, $event)">
+                  
+                    @if(task.isCompleted){
+                      <span>✓ Verified</span>
+                    }@else{
+                      <span>Mark Complete</span>
+                    }
+                    </button>
+                }
 
-              <span class="assigned-user">
-                Assigned to:
-                {{ task.assignedUser | titlecase }}
-              </span>
-              
+                <span class="assigned-user">
+                  {{ task.assignedUser | titlecase }}
+                </span>
+              </div>  
             </div>
           </div>
         }
