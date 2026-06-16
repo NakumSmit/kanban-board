@@ -1,59 +1,217 @@
-# KanbanBoard
+﻿# Kanban Board
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.10.
+## Project overview
 
-## Development server
+Kanban Board is an Angular 19 task management application built with a classic kanban workflow. It includes login-based access, role-aware permissions, task creation and editing, priority filtering, and drag-and-drop task movement across board columns.
 
-To start a local development server, run:
+## Tech stack
+
+- Angular 19.2.x
+- TypeScript 5.6.x
+- Angular CDK Drag & Drop
+- Angular Reactive Forms
+- json-server for mock REST API
+- SCSS for styling
+- RxJS for reactive state handling
+
+## Main features
+
+- Email/password login with mock API authentication
+- Kanban board with columns: `Todo`, `In Progress`, `Review`, `Done`
+- Add, edit, view, and delete tasks
+- Drag and drop tasks between columns
+- Role-based permissions for `admin`, `hr`, and `user`
+- Search by task title
+- Filter by priority and assignee
+- Task completion toggle for `in-progress` tasks
+- Loading skeleton while tasks are fetched
+
+## Authentication flow
+
+- `LoginComponent` validates credentials against `http://localhost:3000/users`
+- Successful login stores `isLoggedIn` and `loggedInUser` in `localStorage`
+- `authGuard` protects `/dashboard`
+- `loginGuard` redirects logged-in users away from `/login`
+
+## Role-based permissions
+
+User roles are defined in `db.json` and enforced in the UI:
+
+- `admin`
+  - Can drag any task
+  - Can edit any task
+  - Can delete tasks
+  - Can mark tasks complete
+- `hr`
+  - Can drag any task
+  - Can edit any task
+  - Cannot delete tasks via modal controls
+  - Can mark tasks complete
+- `user`
+  - Can drag only their own tasks
+  - Can edit only their own tasks in `todo` or `in-progress`
+  - Can complete only their own tasks
+  - Cannot modify tasks assigned to others
+
+## Kanban workflow rules
+
+The board uses the following statuses:
+
+- `todo`
+- `in-progress`
+- `review`
+- `done`
+
+Task status is saved through the mock API and displayed in matching columns.
+
+## Drag and drop behavior
+
+- Implemented with Angular CDK in `TasksComponent`
+- All columns are connected drop lists
+- `admin` and `hr` can move any task
+- `user` can move only their assigned tasks
+- Moving from `in-progress` to `review` requires task completion for `admin` and `hr`
+- Status updates persist through `ApiTasksService.updateTask()`
+
+## Task completion rules
+
+- Completion is available only in the `in-progress` column
+- `admin` and `hr` can complete any task
+- `user` can complete only tasks assigned to them
+- Completed tasks are marked with `task.isCompleted`
+- Tasks must be completed before moving to `review` in restricted flows
+
+## API / local server setup
+
+This app uses `json-server` as a mock backend.
+
+- Users endpoint: `http://localhost:3000/users`
+- Tasks endpoint: `http://localhost:3000/tasks`
+
+Mock data is stored in `db.json`.
+
+### Start mock API server
 
 ```bash
-ng serve
+npm run api
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## Installation steps
 
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+1. Install dependencies:
 
 ```bash
-ng generate component component-name
+npm install
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+2. Start the mock API server:
 
 ```bash
-ng generate --help
+npm run api
 ```
 
-## Building
-
-To build the project run:
+3. Start the Angular development server:
 
 ```bash
-ng build
+npm start
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+4. Open the app at:
 
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
+```text
+http://localhost:4200
 ```
 
-## Running end-to-end tests
+## Run project commands
 
-For end-to-end (e2e) testing, run:
+- `npm start` — run Angular dev server
+- `npm run api` — run local json-server API
+- `npm run build` — build production bundle
+- `npm run test` — run unit tests
 
-```bash
-ng e2e
+## Folder structure
+
+```
+kanban-board/
+├─ angular.json
+├─ package.json
+├─ db.json
+├─ README.md
+├─ src/
+│  ├─ app/
+│  │  ├─ app.routes.ts
+│  │  ├─ components/
+│  │  │  ├─ add-task-modal/
+│  │  │  ├─ board/
+│  │  │  ├─ board-loader/
+│  │  │  ├─ dashboard/
+│  │  │  ├─ login/
+│  │  │  ├─ navbar/
+│  │  │  ├─ tasks/
+│  │  ├─ guard/
+│  │  │  ├─ auth/
+│  │  │  ├─ loginGuard/
+│  │  ├─ models/
+│  │  ├─ services/
+│  │  │  ├─ api-tasks/
+│  │  │  ├─ auth/
+│  ├─ main.ts
+│  ├─ styles.scss
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+## Important components and services
 
-## Additional Resources
+- `LoginComponent` — login form and authentication flow
+- `DashboardComponent` — main protected page and layout
+- `BoardComponent` — task loading, filters, and modal control
+- `TasksComponent` — kanban columns, drag/drop, and task cards
+- `AddTaskModalComponent` — create/edit/view task modal with validation
+- `BoardLoaderComponent` — loading skeleton display
+- `AuthService` — login and localStorage session handling
+- `ApiTasksService` — task CRUD operations against mock API
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+## Screens/pages overview
+
+- `Login` — secure entry point with validation feedback
+- `Dashboard` — kanban board with search, filters, and task modal support
+
+## Validation rules
+
+- Login:
+  - Email is required and must be valid
+  - Password is required and must be at least 6 characters
+- Task form:
+  - Title is required, minimum 3 characters, must start with a letter
+  - Description is required, minimum 10 characters, must start with a letter
+  - Priority is required
+  - Due date is required and cannot be in the past
+  - Assigned user is required
+  - Status is required
+
+## Known limitations
+
+- Authentication is mocked via `json-server`
+- Role checks are enforced on the client side only
+- No real backend or secure token/session management
+- No production API or database configured yet
+
+## Future improvements
+
+- Add secure backend authentication and session management
+- Implement server-side role enforcement
+- Add full unit and integration tests
+- Improve mobile responsiveness and accessibility
+- Add task activity/history logging
+
+## Author
+
+Smit Nakum
+
+- Angular Developer
+- Built as an Angular 19 Kanban Task Management Application
+
+## License
+
+This project is licensed under the ISC License.
+
+See the LICENSE file for details.
