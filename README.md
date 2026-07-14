@@ -1,5 +1,7 @@
 ﻿# Kanban Board
 
+🚀 Live Demo: https://tasktrek-kanban.vercel.app
+
 ## Project overview
 
 Kanban Board is an Angular 19 task management application built with a classic kanban workflow. It includes login-based access, role-aware permissions, task creation and editing, priority filtering, and drag-and-drop task movement across board columns.
