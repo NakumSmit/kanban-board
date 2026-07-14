@@ -9,7 +9,7 @@ import { ApiTasks, Tasks } from '../../models/tasks';
 })
 export class ApiTasksService {
 
-  private apiUrl = 'http://localhost:3000/tasks';
+  private readonly apiUrl = 'https://kanban-board-api-lc6k.onrender.com/tasks';
 
   constructor(private http: HttpClient) {}
 

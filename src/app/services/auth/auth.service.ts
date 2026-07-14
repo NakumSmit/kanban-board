@@ -10,7 +10,7 @@ export class AuthService {
 
   constructor(private http: HttpClient){}
   
-  private usersUrl = 'http://localhost:3000/users';
+  private readonly usersUrl = 'https://kanban-board-api-lc6k.onrender.com/users';
   
   login(email: string, password: string): Observable<boolean>{
     return this.http.get<Users[]>(`${this.usersUrl}?email=${email}`).pipe(
