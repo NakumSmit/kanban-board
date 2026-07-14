@@ -59,4 +59,12 @@ export class LoginComponent {
       this.loginForm.markAllAsTouched();
     }
   }
+
+  fillDemoCredentials(): void {
+    this.loginForm.patchValue({
+      email: 'demo@tasktrek.com',
+      password: 'demo@123'
+    });
+    this.onSubmit();
+  }
 }

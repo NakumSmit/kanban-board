@@ -49,6 +49,13 @@
       "password": "rohanpatel@123",
       "role": "user"
     }
+    ,{
+      "id": 9,
+      "username": "Demo User",
+      "email": "demo@tasktrek.com",
+      "password": "demo@123",
+      "role": "admin"
+    }
   ],
   "tasks": [
     {

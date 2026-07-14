@@ -48,8 +48,18 @@
           {{ loginError }}
         </div>
       }
+      
+      <div class="btns" style="display: flex;flex-direction: column; gap: 10px;">
 
       <button type="submit" class="login-btn">LOGIN</button>
+
+      <button
+      type="submit"
+      class="login-btn"
+      (click)="fillDemoCredentials()">
+      Demo Account
+      </button>
+      </div>
     </form>
   </div>
 </div>
